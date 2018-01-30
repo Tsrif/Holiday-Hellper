@@ -71,6 +71,18 @@ public class Patrol : MonoBehaviour
         changeState();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject == target)
+        {
+            if (other.gameObject.GetComponent<PlayerController>().soundRadius)
+            {
+                _patrolState = PatrolState.PURSUING;
+            }
+
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject == target)
@@ -88,10 +100,6 @@ public class Patrol : MonoBehaviour
                         _patrolState = PatrolState.PURSUING;
                     }
                 }
-            }
-            else
-            {
-                _patrolState = PatrolState.PATROLLING;
             }
         }
     }
@@ -158,7 +166,7 @@ public class Patrol : MonoBehaviour
                 // chases after the target
                 agent.SetDestination(target.transform.position);
                 //if we get too close and the player is hiding then swap back to patrolling
-                if (distance < 1 && target.GetComponent<PlayerController>().hide == true)
+                if (distance < 1 && target.GetComponent<PlayerController>().hide)
                 {
                     _patrolState = PatrolState.PATROLLING;
                 }

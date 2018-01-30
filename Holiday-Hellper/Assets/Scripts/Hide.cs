@@ -28,8 +28,8 @@ public class Hide : MonoBehaviour {
         if (Input.GetButtonDown("Hide")) {
             if (_hideState == HideState.NOT_HIDDEN)
             {
-                //If we hit the limit , then don't hide anymore. 
-                if (hideCount == hideLimit) {
+                //If we hit the limit or are carrying something, then don't hide anymore. 
+                if (hideCount == hideLimit || player.GetComponent<PlayerController>()._playerState == PlayerState.CARRYING) {
                     return;
                 }
                 _hideState = HideState.HIDDEN;
