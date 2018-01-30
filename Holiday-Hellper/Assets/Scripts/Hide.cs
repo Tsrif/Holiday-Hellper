@@ -47,7 +47,7 @@ public class Hide : MonoBehaviour {
     void switchState() {
         if (hide != null)
         {
-            //hide();
+            hide();
         }
         switch (_hideState) {
             case HideState.HIDDEN:

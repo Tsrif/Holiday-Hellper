@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour {
         GameController.changeGameState += updateGameState;
         //PlayerAbilities.hide += playerHide;
         Hide.hide += playerHide;
+        hide = false;
 
     }
 
@@ -47,7 +48,7 @@ public class PlayerController : MonoBehaviour {
     void Update () {
 
 
-        if(gameState == GameState.PAUSED || gameState == GameState.WIN || hide)
+        if(gameState == GameState.PAUSED || gameState == GameState.WIN )
         {
             return;
         }

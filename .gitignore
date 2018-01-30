@@ -26,6 +26,7 @@ sysinfo.txt
 *.user
 *.userprefs
 *.pidb
+*.lock
 .DS_Store
 
 ###

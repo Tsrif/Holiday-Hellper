@@ -2165,37 +2165,6 @@ Transform:
   m_Father: {fileID: 1910950357}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &238014744
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_Width: 947
-  m_Height: 608
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &239164745
 GameObject:
   m_ObjectHideFlags: 0
@@ -3251,14 +3220,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b98839d4848e3c4da01bd5d21d55e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPursuing: 0
-  isPatrolling: 1
   fovAngle: 110
   target: {fileID: 1672154415}
   patrolPoints:
   - {fileID: 812048533}
   - {fileID: 2121332489}
   distance: 0
+  _patrolState: 1
 --- !u!195 &326811152
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -6135,14 +6103,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b98839d4848e3c4da01bd5d21d55e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPursuing: 0
-  isPatrolling: 1
   fovAngle: 110
   target: {fileID: 1672154415}
   patrolPoints:
   - {fileID: 781593110}
   - {fileID: 755358206}
   distance: 0
+  _patrolState: 0
 --- !u!195 &635034815
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -8930,37 +8897,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 917756131}
   m_Mesh: {fileID: 4300008, guid: 53fd6f5729dcb094ebf37d4437bf647a, type: 3}
---- !u!84 &919955682
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_Width: 947
-  m_Height: 608
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &922053026
 GameObject:
   m_ObjectHideFlags: 0
@@ -9638,6 +9574,37 @@ Transform:
   m_Father: {fileID: 607717883}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!84 &977329973
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_Width: 947
+  m_Height: 608
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 0
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!4 &983048265
 Transform:
   m_ObjectHideFlags: 0
@@ -12222,14 +12189,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b98839d4848e3c4da01bd5d21d55e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPursuing: 0
-  isPatrolling: 1
   fovAngle: 110
   target: {fileID: 1672154415}
   patrolPoints:
   - {fileID: 170481091}
   - {fileID: 599846207}
   distance: 0
+  _patrolState: 0
 --- !u!195 &1276062267
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -12780,14 +12746,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b98839d4848e3c4da01bd5d21d55e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPursuing: 0
-  isPatrolling: 1
   fovAngle: 110
   target: {fileID: 1672154415}
   patrolPoints:
   - {fileID: 625043198}
   - {fileID: 1509671840}
   distance: 0
+  _patrolState: 0
 --- !u!195 &1383613211
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -13897,14 +13862,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b98839d4848e3c4da01bd5d21d55e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPursuing: 0
-  isPatrolling: 1
   fovAngle: 110
   target: {fileID: 1672154415}
   patrolPoints:
   - {fileID: 599846207}
   - {fileID: 170481091}
   distance: 0
+  _patrolState: 0
 --- !u!195 &1538437230
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -14790,7 +14754,7 @@ Prefab:
         type: 2}
       propertyPath: m_TargetTexture
       value: 
-      objectReference: {fileID: 919955682}
+      objectReference: {fileID: 977329973}
     - target: {fileID: 114363502429064054, guid: b9ba9ff4bcc96cf46baa3d83848faee0,
         type: 2}
       propertyPath: target
@@ -14845,7 +14809,7 @@ AudioSource:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1615255906}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 5d79a1c4f2d7ac14eb3ebe9661c978a3, type: 3}
@@ -17086,6 +17050,37 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.11, y: 0.16, z: 0.13}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!84 &1894651167
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_Width: 947
+  m_Height: 608
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &1895664438
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,26 +1,25 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
+public enum PatrolState { PATROLLING, PURSUING };
+
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(SphereCollider))]
 
-public class Patrol : MonoBehaviour {
-
-    public bool isPursuing;
-    public bool isPatrolling;    
-
+public class Patrol : MonoBehaviour
+{
     [SpaceAttribute]
 
-    public float fovAngle;        
+    public float fovAngle;
     public GameObject target;
 
     [SpaceAttribute]
 
-    public Transform[] patrolPoints;    
+    public Transform[] patrolPoints;
 
     private int wanderIndex;
-    private float targetAngle;            
-    private RaycastHit hit;    
+    private float targetAngle;
+    private RaycastHit hit;
     private NavMeshAgent agent;
     private Vector3 directionTotarget;
     private SphereCollider sphereCollider;
@@ -28,15 +27,19 @@ public class Patrol : MonoBehaviour {
     private bool targetLocated = false;
     public float distance;
 
+    public PatrolState _patrolState;
+
     private GameState gameState = GameState.PLAYING;
 
-	// Use this for initialization
-	private void Start () {
-        wanderIndex = 0;		
+    // Use this for initialization
+    private void Start()
+    {
+        _patrolState = PatrolState.PATROLLING;
+        wanderIndex = 0;
         agent = GetComponent<NavMeshAgent>();
         sphereCollider = GetComponent<SphereCollider>();
-        isPatrolling = true;
-	}
+
+    }
 
     void OnEnable()
     {
@@ -47,32 +50,26 @@ public class Patrol : MonoBehaviour {
     {
         GameController.changeGameState -= updateGameState;
     }
-    // Update is called once per frame
-    void Update ()
+
+    void Update()
     {
+        //Calculate the distance between the patrol and the player 
         distance = Vector3.Distance(transform.position, target.transform.position);
 
+        //Stop the patrol 
         if (gameState == GameState.PAUSED || gameState == GameState.WIN)
         {
             agent.isStopped = true;
             return;
         }
         else
-        {            
+        {
             agent.isStopped = false;
-            //Debug.Log("Dest: " + agent.destination);
         }
 
-        //Debug.Log(gameObject.name + " : " + agent.remainingDistance);
-
-        if(isPatrolling) {
-
-            if (agent.remainingDistance <= 2 || agent.destination == null )
-            {
-              getNewDestination();
-            }
-        }
-	}
+        //Swap between states
+        changeState();
+    }
 
     private void OnTriggerStay(Collider other)
     {
@@ -83,38 +80,18 @@ public class Patrol : MonoBehaviour {
 
             if (targetAngle < fovAngle * 0.5f)
             {
-              //  Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
-                if(Physics.Raycast(transform.position, directionTotarget, out hit, 100, LayerMask.NameToLayer("Everything"), QueryTriggerInteraction.Ignore)){
-
-                   // Debug.Log("Name: " + hit.transform.name);
-
-                    if(hit.transform.gameObject == target){
-                        isPursuing = true;  
-                        Pursue();
-                    }
-                }
-
-                /* Sunday Logic
-                wall = false;
-                targetLocated = false;
-
-                for (int i = 0; i < checkForPlayer.Length; i++)
+                //  Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
+                if (Physics.Raycast(transform.position, directionTotarget, out hit, 100, LayerMask.NameToLayer("Everything"), QueryTriggerInteraction.Ignore))
                 {
-                    if (checkForPlayer[i].collider.tag == "wall")
+                    if (hit.transform.gameObject == target)
                     {
-                        wall = true;
-                    }else if (checkForPlayer[i].collider.tag == "Player") {
-                        targetLocated = true;
+                        _patrolState = PatrolState.PURSUING;
                     }
                 }
-
-                if (wall == false && targetLocated == true)
-                {
-                    Pursue();
-                }
-                */
-            }else{
-                isPatrolling = true;
+            }
+            else
+            {
+                _patrolState = PatrolState.PATROLLING;
             }
         }
     }
@@ -123,11 +100,12 @@ public class Patrol : MonoBehaviour {
     // go back to wandering/patrolling
     private void OnTriggerExit(Collider other)
     {
-        if(isPursuing){
+        if (_patrolState == PatrolState.PURSUING)
+        {
 
-            if (other.gameObject == target){
-                isPatrolling = true;
-                isPursuing = false;
+            if (other.gameObject == target)
+            {
+                _patrolState = PatrolState.PATROLLING;
 
             }
         }
@@ -135,33 +113,58 @@ public class Patrol : MonoBehaviour {
 
     // cycle through series of points
     // to wander around a set area
-    private void Wander(){
+    private void Wander()
+    {
 
     }
 
     // chases after the target
-    private void Pursue(){
+    private void Pursue()
+    {
 
-        isPatrolling = false;
-        isPursuing = true;
-        
-        agent.SetDestination(target.transform.position);
+        if (_patrolState == PatrolState.PURSUING)
+        {
+            agent.SetDestination(target.transform.position);
+        }
     }
 
+    //Recieve notification from GameController
     void updateGameState(GameState gameState)
     {
         this.gameState = gameState;
     }
 
-    void getNewDestination() {
-
+    //Set the next destination point 
+    void getNewDestination()
+    {
         wanderIndex++;
 
         if (wanderIndex >= patrolPoints.Length)
         {
             wanderIndex = 0;
         }
-
         agent.SetDestination(patrolPoints[wanderIndex].transform.position);
+    }
+
+    void changeState()
+    {
+        switch (_patrolState)
+        {
+            case PatrolState.PATROLLING:
+                if (agent.remainingDistance <= 2 || agent.destination == null)
+                { getNewDestination(); }
+                break;
+            case PatrolState.PURSUING:
+                // chases after the target
+                agent.SetDestination(target.transform.position);
+                //if we get too close and the player is hiding then swap back to patrolling
+                if (distance < 1 && target.GetComponent<PlayerController>().hide == true)
+                {
+                    _patrolState = PatrolState.PATROLLING;
+                }
+                break;
+            default:
+                break;
+        }
     }
 }
