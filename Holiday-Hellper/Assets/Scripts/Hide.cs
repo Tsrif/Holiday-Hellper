@@ -72,6 +72,7 @@ public class Hide : MonoBehaviour {
     void hideStuff() {
         player.GetComponent<CharacterController>().enabled = false;
         player.GetComponent<PlayerController>().enabled = false;
+        player.GetComponent<Interact>().enabled = false;
 
         playerVisual.SetActive(false);
 
@@ -82,6 +83,7 @@ public class Hide : MonoBehaviour {
     void unHide() {
         player.GetComponent<CharacterController>().enabled = true;
         player.GetComponent<PlayerController>().enabled = true;
+        player.GetComponent<Interact>().enabled = true;
         hole.GetComponent<MeshRenderer>().enabled = false;
         playerVisual.SetActive(true);
     }
