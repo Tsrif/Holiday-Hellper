@@ -128,6 +128,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.CARRYING:
+                Movement();
                 if (!interact.carrying) { _playerState = PlayerState.IDLE; }
                 anim.SetBool("Walk", false);
                 moveSpeed = sneakSpeed;
