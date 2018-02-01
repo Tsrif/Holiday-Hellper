@@ -16,15 +16,33 @@ public class Hide : MonoBehaviour {
     public int hideLimit;
     public static event Action hide;
 
+    private GameState gameState;
+
     void Start () {
         _hideState = HideState.NOT_HIDDEN;
 	}
-	
+    void OnEnable()
+    {
+        GameController.changeGameState += updateGameState;
+      
+    }
+
+    void OnDisable()
+    {
+        GameController.changeGameState -= updateGameState;
+     
+    }
+
     //When the hide button is pressed, then hide. 
     //Uses States to keep track if hidden or not
     //Hiding works by just enabling and disabling certain components,
-        //so the player is no longer visible. 
-	void Update () {
+    //so the player is no longer visible. 
+    void Update () {
+        if (gameState == GameState.PAUSED || gameState == GameState.WIN)
+        {
+            return;
+        }
+
         if (Input.GetButtonDown("Hide")) {
             if (_hideState == HideState.NOT_HIDDEN)
             {
@@ -86,5 +104,10 @@ public class Hide : MonoBehaviour {
         player.GetComponent<Interact>().enabled = true;
         hole.GetComponent<MeshRenderer>().enabled = false;
         playerVisual.SetActive(true);
+    }
+
+    void updateGameState(GameState gameState)
+    {
+        this.gameState = gameState;
     }
 }
