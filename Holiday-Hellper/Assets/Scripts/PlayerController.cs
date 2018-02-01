@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING };
+public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING, WALKING_TO_SNEAK, SNEAK_TO_WALKING };
 public class PlayerController : MonoBehaviour
 {
 
@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed;
     public float sneakSpeed;
     public float runSpeed;
-    public float jumpForce;
 
     public CharacterController controller;
     public Vector3 moveDirection;
@@ -87,7 +86,7 @@ public class PlayerController : MonoBehaviour
         {
             case PlayerState.IDLE:
                 Movement();
-                if (Input.GetAxis("Sneak") > 0) { _playerState = PlayerState.SNEAK; }
+                if (Input.GetAxis("Sneak") > 0) {_playerState = PlayerState.WALKING_TO_SNEAK;}
                 if (Input.GetAxis("Run") > 0) { _playerState = PlayerState.RUNNING; }
                 if (Input.GetAxis("Vertical") != 0|| Input.GetAxis("Horizontal") != 0) { _playerState = PlayerState.WALKING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
@@ -97,7 +96,7 @@ public class PlayerController : MonoBehaviour
 
             case PlayerState.WALKING:
                 Movement();
-                if (Input.GetAxis("Sneak") > 0) { _playerState = PlayerState.SNEAK; }
+                if (Input.GetAxis("Sneak") > 0) { _playerState = PlayerState.WALKING_TO_SNEAK; }
                 if (Input.GetAxis("Run") > 0) { _playerState = PlayerState.RUNNING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
                 if (getMoveDir() == 0) { _playerState = PlayerState.IDLE; }
@@ -107,7 +106,7 @@ public class PlayerController : MonoBehaviour
 
             case PlayerState.SNEAK:
                 Movement();
-                if (Input.GetAxis("Sneak") == 0) { _playerState = PlayerState.IDLE; }
+                if (Input.GetAxis("Sneak") == 0) { _playerState = PlayerState.SNEAK_TO_WALKING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
                 moveSpeed = sneakSpeed;
                 soundRadius.radius = sneakRad;
@@ -128,10 +127,33 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.CARRYING:
+                Movement();
                 if (!interact.carrying) { _playerState = PlayerState.IDLE; }
                 anim.SetBool("Walk", false);
                 moveSpeed = sneakSpeed;
                 soundRadius.radius = carryingRad;
+                break;
+
+            case PlayerState.WALKING_TO_SNEAK:
+                //Turn off walk
+                anim.SetBool("Walk", false);
+                //Transition
+                anim.SetTrigger("Change To Sneak");
+                //turn on sneak
+                anim.SetBool("Sneak", true);
+                //change state
+                _playerState = PlayerState.SNEAK;
+                break;
+
+            case PlayerState.SNEAK_TO_WALKING:
+                //Turn on walk
+                anim.SetBool("Walk", true);
+                //Transition
+                anim.SetTrigger("Change To Walk");
+                //turn off sneak
+                anim.SetBool("Sneak", false);
+                //change state
+                _playerState = PlayerState.WALKING;
                 break;
 
             default:
