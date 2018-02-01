@@ -3220,6 +3220,7 @@ MonoBehaviour:
   patrolPoints:
   - {fileID: 170481091}
   - {fileID: 599846207}
+  hearingRadius: {fileID: 0}
   distance: 0
   walkSpeed: 8
   runSpeed: 14
@@ -3230,6 +3231,8 @@ MonoBehaviour:
   vigilantFov: 130
   vigilantTime: 10
   alerted: 0
+  canHear: 0
+  canSee: 0
   _patrolState: 0
 --- !u!195 &326811152
 NavMeshAgent:
@@ -6112,6 +6115,7 @@ MonoBehaviour:
   patrolPoints:
   - {fileID: 170481091}
   - {fileID: 599846207}
+  hearingRadius: {fileID: 0}
   distance: 0
   walkSpeed: 8
   runSpeed: 14
@@ -6122,6 +6126,8 @@ MonoBehaviour:
   vigilantFov: 130
   vigilantTime: 10
   alerted: 0
+  canHear: 0
+  canSee: 0
   _patrolState: 0
 --- !u!195 &635034815
 NavMeshAgent:
@@ -12629,16 +12635,19 @@ MonoBehaviour:
   patrolPoints:
   - {fileID: 170481091}
   - {fileID: 599846207}
+  hearingRadius: {fileID: 0}
   distance: 0
   walkSpeed: 0
   runSpeed: 0
   anim: {fileID: 2043813487}
-  normalRad: 10
-  vigilantRad: 17
+  normalRad: 5
+  vigilantRad: 10
   normalFov: 80
   vigilantFov: 130
   vigilantTime: 10
   alerted: 0
+  canHear: 0
+  canSee: 0
   _patrolState: 0
 --- !u!195 &1276062267
 NavMeshAgent:
@@ -12673,7 +12682,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 10
+  m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1276062269
 MeshRenderer:
@@ -13195,6 +13204,7 @@ MonoBehaviour:
   patrolPoints:
   - {fileID: 170481091}
   - {fileID: 599846207}
+  hearingRadius: {fileID: 0}
   distance: 0
   walkSpeed: 8
   runSpeed: 14
@@ -13205,6 +13215,8 @@ MonoBehaviour:
   vigilantFov: 130
   vigilantTime: 10
   alerted: 0
+  canHear: 0
+  canSee: 0
   _patrolState: 0
 --- !u!195 &1383613211
 NavMeshAgent:
@@ -13536,37 +13548,7 @@ Transform:
   m_PrefabParentObject: {fileID: 4897865108724532, guid: 1d5b661dc5f9b467eac9d0d82fd007f3,
     type: 2}
   m_PrefabInternal: {fileID: 1964516955}
---- !u!84 &1429825546
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_Width: 1203
-  m_Height: 518
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &1433198719 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1171042622477966, guid: 65ff559d0ae50524ea7ab6a5f76a5faf,
@@ -13909,7 +13891,7 @@ GameObject:
   - component: {fileID: 1470627866}
   - component: {fileID: 1470627867}
   m_Layer: 0
-  m_Name: Char1
+  m_Name: PatrolVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14369,7 +14351,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1538437229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14387,6 +14369,7 @@ MonoBehaviour:
   patrolPoints:
   - {fileID: 170481091}
   - {fileID: 599846207}
+  hearingRadius: {fileID: 0}
   distance: 0
   walkSpeed: 8
   runSpeed: 14
@@ -14397,6 +14380,8 @@ MonoBehaviour:
   vigilantFov: 130
   vigilantTime: 10
   alerted: 0
+  canHear: 0
+  canSee: 0
   _patrolState: 0
 --- !u!195 &1538437230
 NavMeshAgent:
@@ -14999,7 +14984,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1588978125
 Transform:
   m_ObjectHideFlags: 0
@@ -15283,7 +15268,11 @@ Prefab:
         type: 2}
       propertyPath: m_TargetTexture
       value: 
+<<<<<<<
       objectReference: {fileID: 1429825546}
+=======
+      objectReference: {fileID: 1421082422}
+>>>>>>>
     - target: {fileID: 114363502429064054, guid: b9ba9ff4bcc96cf46baa3d83848faee0,
         type: 2}
       propertyPath: target
@@ -18844,7 +18833,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4970212649178906, guid: 843667db831228549b6a2f57f446fe0a, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 23146710754537016, guid: 843667db831228549b6a2f57f446fe0a,
         type: 2}
@@ -19171,7 +19160,7 @@ GameObject:
   - component: {fileID: 2043813486}
   - component: {fileID: 2043813487}
   m_Layer: 0
-  m_Name: Char1
+  m_Name: PatrolVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19361,6 +19350,37 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2069828125}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!84 &2071755132
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_Width: 869
+  m_Height: 396
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &2074472844
 GameObject:
   m_ObjectHideFlags: 0

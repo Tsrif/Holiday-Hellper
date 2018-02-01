@@ -26,7 +26,7 @@ public class Patrol : MonoBehaviour
     private RaycastHit hit;
     private NavMeshAgent agent;
     private Vector3 directionTotarget;
-    private SphereCollider sphereCollider;
+    public SphereCollider hearingRadius;
     public float distance;
 
     public float walkSpeed;
@@ -47,6 +47,10 @@ public class Patrol : MonoBehaviour
                          //Uses coroutine to turn alerted off
 
 
+    public bool canHear;
+    public bool canSee;
+
+    public float meshResolution;
     public PatrolState _patrolState;
 
     private GameState gameState = GameState.PLAYING;
@@ -57,7 +61,7 @@ public class Patrol : MonoBehaviour
         _patrolState = PatrolState.PATROLLING;
         wanderIndex = 0;
         agent = GetComponent<NavMeshAgent>();
-        sphereCollider = GetComponent<SphereCollider>();
+        hearingRadius = GetComponent<SphereCollider>();
         alerted = false;
 
     }
@@ -94,16 +98,17 @@ public class Patrol : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        // if we are colliding with the player 
+        // if we hear the player 
         if (other.gameObject == target)
         {
+            canHear = true;
             directionTotarget = other.transform.position - transform.position;
             targetAngle = Vector3.Angle(directionTotarget, transform.forward);
+            print(targetAngle);
             //if patrol hasn't been alerted and the player is sneaking then lower the field of view 
-            if (!alerted && target.GetComponent<PlayerController>()._playerState == PlayerState.SNEAK)
+            if (!alerted && target.GetComponent<PlayerController>()._playerState == PlayerState.SNEAK )
             {
-                print("Gotcha");
-                if (targetAngle < fovAngle * 0.5f)
+                if (targetAngle < fovAngle)
                 {
                     Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
                     if (Physics.Raycast(transform.position, directionTotarget, out hit, 100, LayerMask.NameToLayer("Everything"), QueryTriggerInteraction.Ignore))
@@ -117,6 +122,7 @@ public class Patrol : MonoBehaviour
             }
             else
             {
+                canSee = true;
                 Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
                 if (Physics.Raycast(transform.position, directionTotarget, out hit, 100, LayerMask.NameToLayer("Everything"), QueryTriggerInteraction.Ignore))
                 {
@@ -134,6 +140,8 @@ public class Patrol : MonoBehaviour
     // go back to wandering/patrolling
     private void OnTriggerExit(Collider other)
     {
+        canHear = false;
+        canSee = false;
         if (_patrolState == PatrolState.PURSUING)
         {
 
@@ -190,7 +198,7 @@ public class Patrol : MonoBehaviour
                 //Change the speed
                 agent.speed = walkSpeed;
                 //set sphere collider radius back to normal
-                sphereCollider.radius = normalRad;
+                hearingRadius.radius = normalRad;
                 //move the patrol 
                 if (agent.remainingDistance <= 2 || agent.destination == null)
                 { getNewDestination(); }
@@ -219,7 +227,7 @@ public class Patrol : MonoBehaviour
                 //Set the fov
                 fovAngle = vigilantFov;
                 //increase the radius of the sphere collider trigger
-                sphereCollider.radius = vigilantRad;
+                hearingRadius.radius = vigilantRad;
                 //if we aren't alerted anyomre go back to patrolling 
                 if (!alerted) { _patrolState = PatrolState.PATROLLING; }
                 //move the patrol 
@@ -238,6 +246,24 @@ public class Patrol : MonoBehaviour
         alerted = false;
         StopCoroutine(CountDown());
     }
+    /*
+    bool CanSeePlayer()
+    {
+        if (Vector3.Distance(transform.position, target.transform.position) < viewDistance)
+        {
+            Vector3 dirToPlayer = (target.transform.position - transform.position).normalized;
+            float angleBetweenGuardAndPlayer = Vector3.Angle(transform.forward, dirToPlayer);
+            if (angleBetweenGuardAndPlayer < fovAngle / 2f)
+            {
+                if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    */
 
     //Shows the patrol's field of view
     private void OnDrawGizmos()
