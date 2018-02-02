@@ -33,9 +33,6 @@ public class PlayerController : MonoBehaviour
     public float hideRad;
     public float carryingRad;
 
-    public Transform pivot;
-    public float rotateSpeed;
-    public GameObject playerModel;
     // Use this for initialization
     void Start()
     {
@@ -69,10 +66,6 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-
-        //move player in different directions based on camera direction
-        
-
         ChangeState(); 
     }
 
@@ -178,7 +171,6 @@ public class PlayerController : MonoBehaviour
     }
 
     void Movement() {
-        
         float y = moveDirection.y;
         moveDirection = (transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"));
         moveDirection = moveDirection.normalized * moveSpeed;
@@ -187,15 +179,6 @@ public class PlayerController : MonoBehaviour
         anim.SetFloat("BlendY", controller.velocity.z);
         moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale * Time.deltaTime);
         controller.Move(moveDirection * Time.deltaTime);
-
-        //move player in different directions based on camera direction
-        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
-        {
-            transform.rotation = Quaternion.Euler(0f, pivot.rotation.eulerAngles.y, 0f);
-            Quaternion newRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
-            playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
-
-        }
     }
 
 }
