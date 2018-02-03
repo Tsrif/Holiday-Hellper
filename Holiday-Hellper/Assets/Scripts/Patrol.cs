@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+
 
 //Patrol - Walks between set points
 //Pursuing - Chases player
@@ -24,7 +26,7 @@ public class Patrol : MonoBehaviour
     private int wanderIndex;
     private float targetAngle;
     private RaycastHit hit;
-    private NavMeshAgent agent;
+    public NavMeshAgent agent;
     private Vector3 directionTotarget;
     public SphereCollider hearingRadius;
     public float distance;
@@ -54,6 +56,13 @@ public class Patrol : MonoBehaviour
 
     public LayerMask viewMask;
 
+    public float meshResolution;
+
+
+    public MeshFilter viewMeshFilter;
+    Mesh viewMesh;
+
+
     public PatrolState _patrolState;
 
     private GameState gameState = GameState.PLAYING;
@@ -61,6 +70,7 @@ public class Patrol : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
+       
         _patrolState = PatrolState.PATROLLING;
         wanderIndex = 0;
         agent = GetComponent<NavMeshAgent>();
@@ -94,6 +104,7 @@ public class Patrol : MonoBehaviour
         {
             agent.isStopped = false;
         }
+
         if (canSee || canHear) {
             _patrolState = PatrolState.PURSUING;
         }
@@ -269,4 +280,6 @@ public class Patrol : MonoBehaviour
         Gizmos.DrawRay(transform.position, leftRayDirection * rayRange);
         Gizmos.DrawRay(transform.position, rightRayDirection * rayRange);
     }
+
+  
 }
