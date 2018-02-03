@@ -54,13 +54,10 @@ public class Patrol : MonoBehaviour
     public bool canHear;
     public bool canSee;
 
+    public bool playerIsHiding;
+
     public LayerMask viewMask;
 
-    public float meshResolution;
-
-
-    public MeshFilter viewMeshFilter;
-    Mesh viewMesh;
 
 
     public PatrolState _patrolState;
@@ -70,7 +67,7 @@ public class Patrol : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
-       
+
         _patrolState = PatrolState.PATROLLING;
         wanderIndex = 0;
         agent = GetComponent<NavMeshAgent>();
@@ -105,7 +102,13 @@ public class Patrol : MonoBehaviour
             agent.isStopped = false;
         }
 
-        if (canSee || canHear) {
+        if (target.GetComponent<PlayerController>()._playerState== PlayerState.HIDE) {
+            canHear = false;
+            canSee = false;
+        }
+
+        if (canSee || canHear)
+        {
             _patrolState = PatrolState.PURSUING;
         }
         //Swap between states
@@ -116,16 +119,20 @@ public class Patrol : MonoBehaviour
     {
         //if the player enters our hearing field we can only hear them if they aren't stealthed
         //if the player enters our hearing radius
-        if (other.gameObject == target) {
+        if (target.GetComponent<PlayerController>()._playerState == PlayerState.SNEAK) {
+            return;
+        }
+
+        if (other.gameObject == target)
+        {
+            alerted = true;
             canSee = CanSeePlayer();
             directionTotarget = other.transform.position - transform.position;
             //if the player is not sneaking then we can hear them
-            if (target.GetComponent<PlayerController>()._playerState != PlayerState.SNEAK )
-            {
-                Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
-                canHear = true;
-                
-            }
+
+            Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
+            canHear = true;
+
         }
     }
 
@@ -201,6 +208,7 @@ public class Patrol : MonoBehaviour
                     StartCoroutine(CountDown());
                 }
                 break;
+
             case PatrolState.PURSUING:
                 //Change the speed
                 agent.speed = runSpeed;
@@ -215,6 +223,7 @@ public class Patrol : MonoBehaviour
                 if (distance < 1 && target.GetComponent<PlayerController>().hide)
                 { _patrolState = PatrolState.PATROLLING; }
                 break;
+
             case PatrolState.VIGILANT:
                 //Set the fov
                 fovAngle = vigilantFov;
@@ -225,8 +234,8 @@ public class Patrol : MonoBehaviour
                 //move the patrol 
                 if (agent.remainingDistance <= 2 || agent.destination == null)
                 { getNewDestination(); }
-
                 break;
+
             default:
                 break;
         }
@@ -239,7 +248,7 @@ public class Patrol : MonoBehaviour
         StopCoroutine(CountDown());
     }
 
-    
+
     bool CanSeePlayer()
     {
         //the local scale of the z will mess with the radius, so multiple by that
@@ -256,7 +265,7 @@ public class Patrol : MonoBehaviour
                 if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
                 {
                     //draw a line between the patrol and the player
-                    Debug.DrawRay(transform.position, directionTotarget, Color.red,2f,false);
+                    Debug.DrawRay(transform.position, directionTotarget, Color.red, 2f, false);
                     //can see player
                     return true;
                 }
@@ -265,7 +274,7 @@ public class Patrol : MonoBehaviour
         //can't see player 
         return false;
     }
-    
+
 
     //Shows the patrol's field of view
     private void OnDrawGizmos()
@@ -281,5 +290,5 @@ public class Patrol : MonoBehaviour
         Gizmos.DrawRay(transform.position, rightRayDirection * rayRange);
     }
 
-  
+
 }

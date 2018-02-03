@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING, WALKING_TO_SNEAK, SNEAK_TO_WALKING };
+public enum PlayerVisibility { NOTVISIBLE, VISIBLE };
 public class PlayerController : MonoBehaviour
 {
 
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
     public SphereCollider soundRadius;
     public PlayerState _playerState;
+    public PlayerVisibility _playerVisibility;
 
     //All the radiuses the soundRadius can be 
     public float idleRad;
@@ -36,7 +38,7 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        _playerVisibility = PlayerVisibility.NOTVISIBLE;
         controller = GetComponent<CharacterController>();
         interact = GetComponent<Interact>();
         _playerState = PlayerState.IDLE;
@@ -49,6 +51,7 @@ public class PlayerController : MonoBehaviour
         //PlayerAbilities.hide += playerHide;
         Hide.hide += playerHide;
         hide = false;
+        anim.SetBool("Walk", true);
         _playerState = PlayerState.IDLE;
 
     }
@@ -62,7 +65,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameState == GameState.PAUSED || gameState == GameState.WIN)
+        if (gameState == GameState.PAUSED || gameState == GameState.WIN || hide)
         {
             return;
         }
@@ -167,7 +170,6 @@ public class PlayerController : MonoBehaviour
         float temp1 = moveDirection.x;
         float temp2 = moveDirection.z;
         return temp1 + temp2;
-
     }
 
     void Movement() {
