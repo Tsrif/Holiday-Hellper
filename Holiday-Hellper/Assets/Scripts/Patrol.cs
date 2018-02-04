@@ -101,37 +101,42 @@ public class Patrol : MonoBehaviour
         {
             agent.isStopped = false;
         }
-
+        //If the player is hiding then patrol can't see or hear them 
         if (target.GetComponent<PlayerController>()._playerState== PlayerState.HIDE) {
             canHear = false;
             canSee = false;
         }
 
+        //if patrol can see or hear player then pursue them
         if (canSee || canHear)
         {
             _patrolState = PatrolState.PURSUING;
         }
+
+        //the local scale of the z will mess with the radius, so multiple by that
+        viewDistance = hearingRadius.radius * transform.localScale.z;
+
         //Swap between states
         changeState();
     }
 
     private void OnTriggerStay(Collider other)
     {
-        //if the player enters our hearing field we can only hear them if they aren't stealthed
-        //if the player enters our hearing radius
+        
+        //if the player enters our hearing field we can only hear them if they aren't sneaking
         if (target.GetComponent<PlayerController>()._playerState == PlayerState.SNEAK) {
+            directionTotarget = other.transform.position - transform.position;
+            canSee = CanSeePlayer(directionTotarget);
             return;
         }
 
         if (other.gameObject == target)
         {
-            alerted = true;
-            canSee = CanSeePlayer();
             directionTotarget = other.transform.position - transform.position;
-            //if the player is not sneaking then we can hear them
-
-            Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
+            canSee = CanSeePlayer(directionTotarget);
             canHear = true;
+            alerted = true;
+            Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
 
         }
     }
@@ -249,10 +254,9 @@ public class Patrol : MonoBehaviour
     }
 
 
-    bool CanSeePlayer()
+    bool CanSeePlayer(Vector3 dirToTarget)
     {
-        //the local scale of the z will mess with the radius, so multiple by that
-        viewDistance = hearingRadius.radius * transform.localScale.z;
+        directionTotarget = dirToTarget;
         //if player is within the view distance
         if (distance < viewDistance)
         {
@@ -262,7 +266,7 @@ public class Patrol : MonoBehaviour
             if (angleBetweenGuardAndPlayer < fovAngle / 2f)
             {
                 //check if line of sight of the guard is blocked
-                if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
+                if (!Physics.Linecast(new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z), target.transform.position, viewMask))
                 {
                     //draw a line between the patrol and the player
                     Debug.DrawRay(transform.position, directionTotarget, Color.red, 2f, false);
