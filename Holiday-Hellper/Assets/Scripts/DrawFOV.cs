@@ -6,7 +6,8 @@ using UnityEngine;
     * Tbh I don't really understand a lot of it right now
     */
 
-public class DrawFOV : MonoBehaviour {
+public class DrawFOV : MonoBehaviour
+{
 
     public Patrol patrolScript;
 
@@ -15,17 +16,19 @@ public class DrawFOV : MonoBehaviour {
     public float meshResolution;
 
     public MeshFilter viewMeshFilter;
-    Mesh viewMesh;
+    public Mesh viewMesh;
 
     // Use this for initialization
-    void Start () {
+    void Awake()
+    {
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         drawFieldOfView();
     }
 

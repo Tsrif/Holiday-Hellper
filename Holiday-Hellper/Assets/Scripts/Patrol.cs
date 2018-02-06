@@ -24,8 +24,6 @@ public class Patrol : MonoBehaviour
     public Transform[] patrolPoints;
 
     private int wanderIndex;
-    private float targetAngle;
-    private RaycastHit hit;
     public NavMeshAgent agent;
     private Vector3 directionTotarget;
     public SphereCollider hearingRadius;
@@ -298,6 +296,5 @@ public class Patrol : MonoBehaviour
         Gizmos.DrawRay(transform.position, rightRayDirection * rayRange);
     }
     */
-
 
 }
