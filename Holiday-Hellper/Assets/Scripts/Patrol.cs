@@ -134,10 +134,10 @@ public class Patrol : MonoBehaviour
             }
 
             directionTotarget = other.transform.position - transform.position;
-            canSee = CanSeePlayer(directionTotarget);
-            canHear = true;
-            alerted = true;
-            Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
+            canSee = CanSeePlayer(directionTotarget); //checks to see if player is in field of view
+            canHear = CanHearPlayer(directionTotarget); //checks to see if anything is obstructing hearing radius, patrol can't hear through walls with this
+            
+            
 
         }
     }
@@ -229,8 +229,12 @@ public class Patrol : MonoBehaviour
                 //if we get too close and the player is hiding then swap back to patrolling
                 if (distance < 1 && target.GetComponent<PlayerController>().hide)
                 { _patrolState = PatrolState.PATROLLING; }
+                if (!canSee || !canHear) {
+                    _patrolState = PatrolState.PATROLLING;
+                }
                 break;
 
+                //State triggered after being alerted, fov and hearing radius increase
             case PatrolState.VIGILANT:
                 //Set the fov
                 fovAngle = vigilantFov;
@@ -255,6 +259,20 @@ public class Patrol : MonoBehaviour
         StopCoroutine(CountDown());
     }
 
+    //Used to make it so patrol can't hear player through walls
+    bool CanHearPlayer(Vector3 dirToTarget) {
+        //check if something is blocking hearing of the patrol
+        if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
+        {
+            //draw a line between the patrol and the player
+            Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
+            alerted = true;
+            //can hear player
+            return true;
+        }
+        return false;
+    }
+
 
     bool CanSeePlayer(Vector3 dirToTarget)
     {
@@ -272,6 +290,7 @@ public class Patrol : MonoBehaviour
                 {
                     //draw a line between the patrol and the player
                     Debug.DrawRay(transform.position, directionTotarget, Color.red, 2f, false);
+                    alerted = true;
                     //can see player
                     return true;
                 }
