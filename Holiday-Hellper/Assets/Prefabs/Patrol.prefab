@@ -571,7 +571,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1819994251099386}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.4, y: 0.27, z: 32.4}
+  m_LocalPosition: {x: 2.1, y: 0, z: 39.6}
   m_LocalScale: {x: 1.5, y: 2.5, z: 2.5}
   m_Children:
   - {fileID: 4983306142508376}
@@ -1187,9 +1187,11 @@ MonoBehaviour:
   normalFov: 40
   vigilantFov: 80
   vigilantTime: 10
+  wanderDistance: 80
   alerted: 0
   canHear: 0
   canSee: 0
+  wander: 0
   viewMask:
     serializedVersion: 2
     m_Bits: 512

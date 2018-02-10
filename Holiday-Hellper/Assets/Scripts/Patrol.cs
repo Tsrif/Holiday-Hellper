@@ -7,7 +7,7 @@ using UnityEngine.AI;
 //Patrol - Walks between set points
 //Pursuing - Chases player
 //Similar to Patrol, but now radius to notice player is much larger 
-public enum PatrolState { PATROLLING, PURSUING, VIGILANT };
+public enum PatrolState { PATROLLING, PURSUING, VIGILANT, WANDER };
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(SphereCollider))]
@@ -29,11 +29,12 @@ public class Patrol : MonoBehaviour
     public SphereCollider hearingRadius;
     public float distance;
 
+    [SpaceAttribute]
     public float walkSpeed;
     public float runSpeed;
 
     public Animator anim;
-
+    [SpaceAttribute]
     public float normalRad;
     public float vigilantRad;
 
@@ -43,7 +44,8 @@ public class Patrol : MonoBehaviour
     public float vigilantFov;
 
     public float vigilantTime = 5f;
-
+    public float wanderDistance;
+    [SpaceAttribute]
     public bool alerted; //Used to swap us between patrol and vigilant 
                          //Alerted triggered after pursuing state set 
                          //Uses coroutine to turn alerted off
@@ -51,6 +53,8 @@ public class Patrol : MonoBehaviour
 
     public bool canHear;
     public bool canSee;
+
+    public bool wander;
 
     public LayerMask viewMask;
 
@@ -136,8 +140,8 @@ public class Patrol : MonoBehaviour
             directionTotarget = other.transform.position - transform.position;
             canSee = CanSeePlayer(directionTotarget); //checks to see if player is in field of view
             canHear = CanHearPlayer(directionTotarget); //checks to see if anything is obstructing hearing radius, patrol can't hear through walls with this
-            
-            
+
+
 
         }
     }
@@ -162,7 +166,14 @@ public class Patrol : MonoBehaviour
     // to wander around a set area
     private void Wander()
     {
-
+        wanderIndex++;
+        int temp = Random.Range(0, patrolPoints.Length);
+        if (wanderIndex >= patrolPoints.Length)
+        {
+            wanderIndex = 0;
+        }
+        agent.SetDestination(patrolPoints[temp].transform.position);
+        Debug.Log(agent.destination);
     }
 
     // chases after the target
@@ -193,12 +204,26 @@ public class Patrol : MonoBehaviour
         agent.SetDestination(patrolPoints[wanderIndex].transform.position);
     }
 
+    public static Vector3 RandomNavSphere(Vector3 origin, float distance, int layermask)
+    {
+        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * distance;
+        randomDirection = new Vector3(randomDirection.x, origin.y, randomDirection.z);
+        randomDirection += origin;
+
+        NavMeshHit navHit;
+
+        NavMesh.SamplePosition(randomDirection, out navHit, distance, layermask);
+
+        return navHit.position;
+    }
+
     //Change states and control what is done in those states
     void changeState()
     {
         switch (_patrolState)
         {
             case PatrolState.PATROLLING:
+                if (wander) { _patrolState = PatrolState.WANDER; }
                 //Set the fov
                 fovAngle = normalFov;
                 //Change the speed
@@ -229,12 +254,13 @@ public class Patrol : MonoBehaviour
                 //if we get too close and the player is hiding then swap back to patrolling
                 if (distance < 1 && target.GetComponent<PlayerController>().hide)
                 { _patrolState = PatrolState.PATROLLING; }
-                if (!canSee || !canHear) {
+                if (!canSee || !canHear)
+                {
                     _patrolState = PatrolState.PATROLLING;
                 }
                 break;
 
-                //State triggered after being alerted, fov and hearing radius increase
+            //State triggered after being alerted, fov and hearing radius increase
             case PatrolState.VIGILANT:
                 //Set the fov
                 fovAngle = vigilantFov;
@@ -245,6 +271,30 @@ public class Patrol : MonoBehaviour
                 //move the patrol 
                 if (agent.remainingDistance <= 1 || agent.destination == null)
                 { getNewDestination(); }
+                break;
+
+            case PatrolState.WANDER:
+                if (!wander) { _patrolState = PatrolState.PATROLLING; }
+                //Set the fov
+                fovAngle = normalFov;
+                //Change the speed
+                agent.speed = walkSpeed;
+                //set sphere collider radius back to normal
+                hearingRadius.radius = normalRad;
+                //move the patrol 
+                if (agent.remainingDistance <= 1 || agent.destination == null || agent.velocity.magnitude == 0)
+                {
+                    Vector3 newPos = RandomNavSphere(transform.position, wanderDistance, 9);
+                    Debug.Log(newPos);
+                    agent.SetDestination(newPos);
+                }
+
+                if (alerted)
+                {
+                    //change state to alerted then start coroutine
+                    _patrolState = PatrolState.VIGILANT;
+                    StartCoroutine(CountDown());
+                }
                 break;
 
             default:
@@ -259,8 +309,11 @@ public class Patrol : MonoBehaviour
         StopCoroutine(CountDown());
     }
 
+   
+
     //Used to make it so patrol can't hear player through walls
-    bool CanHearPlayer(Vector3 dirToTarget) {
+    bool CanHearPlayer(Vector3 dirToTarget)
+    {
         //check if something is blocking hearing of the patrol
         if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
         {
