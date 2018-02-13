@@ -131,7 +131,6 @@ public class Patrol : MonoBehaviour
             //if the player enters our hearing field we can only hear them if they aren't sneaking
             if (target.GetComponent<PlayerController>()._playerState == PlayerState.SNEAK)
             {
-                print("He enter but he sneak");
                 directionTotarget = other.transform.position - transform.position;
                 canSee = CanSeePlayer(directionTotarget);
                 return;
@@ -140,9 +139,6 @@ public class Patrol : MonoBehaviour
             directionTotarget = other.transform.position - transform.position;
             canSee = CanSeePlayer(directionTotarget); //checks to see if player is in field of view
             canHear = CanHearPlayer(directionTotarget); //checks to see if anything is obstructing hearing radius, patrol can't hear through walls with this
-
-
-
         }
     }
 
@@ -162,19 +158,7 @@ public class Patrol : MonoBehaviour
         }
     }
 
-    // cycle through series of points
-    // to wander around a set area
-    private void Wander()
-    {
-        wanderIndex++;
-        int temp = Random.Range(0, patrolPoints.Length);
-        if (wanderIndex >= patrolPoints.Length)
-        {
-            wanderIndex = 0;
-        }
-        agent.SetDestination(patrolPoints[temp].transform.position);
-        Debug.Log(agent.destination);
-    }
+
 
     // chases after the target
     private void Pursue()
@@ -228,6 +212,9 @@ public class Patrol : MonoBehaviour
                 fovAngle = normalFov;
                 //Change the speed
                 agent.speed = walkSpeed;
+                //Changes the animation depending on the speed the agent is moving
+                anim.SetFloat("BlendX", agent.velocity.x);
+                anim.SetFloat("BlendY", agent.velocity.z);
                 //set sphere collider radius back to normal
                 hearingRadius.radius = normalRad;
                 //move the patrol 
@@ -264,6 +251,9 @@ public class Patrol : MonoBehaviour
             case PatrolState.VIGILANT:
                 //Set the fov
                 fovAngle = vigilantFov;
+                //Changes the animation depending on the speed the agent is moving
+                anim.SetFloat("BlendX", agent.velocity.x);
+                anim.SetFloat("BlendY", agent.velocity.z);
                 //increase the radius of the sphere collider trigger
                 hearingRadius.radius = vigilantRad;
                 //if we aren't alerted anyomre go back to patrolling 
@@ -279,13 +269,15 @@ public class Patrol : MonoBehaviour
                 fovAngle = normalFov;
                 //Change the speed
                 agent.speed = walkSpeed;
+                //Changes the animation depending on the speed the agent is moving
+                anim.SetFloat("BlendX", agent.velocity.x);
+                anim.SetFloat("BlendY", agent.velocity.z);
                 //set sphere collider radius back to normal
                 hearingRadius.radius = normalRad;
                 //move the patrol 
                 if (agent.remainingDistance <= 1 || agent.destination == null || agent.velocity.magnitude == 0)
                 {
                     Vector3 newPos = RandomNavSphere(transform.position, wanderDistance, 9);
-                    Debug.Log(newPos);
                     agent.SetDestination(newPos);
                 }
 
@@ -309,7 +301,7 @@ public class Patrol : MonoBehaviour
         StopCoroutine(CountDown());
     }
 
-   
+
 
     //Used to make it so patrol can't hear player through walls
     bool CanHearPlayer(Vector3 dirToTarget)
