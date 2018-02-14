@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING, WALKING_TO_SNEAK, SNEAK_TO_WALKING };
 public enum PlayerVisibility { NOTVISIBLE, VISIBLE };
 public class PlayerController : MonoBehaviour
@@ -21,7 +22,7 @@ public class PlayerController : MonoBehaviour
     private GameState gameState = GameState.PLAYING;
     private Interact interact;
 
-    public bool hide;
+    public HideState hide;
 
     public SphereCollider soundRadius;
     public PlayerState _playerState;
@@ -38,6 +39,9 @@ public class PlayerController : MonoBehaviour
     public Transform pivot;
     public float rotateSpeed;
     public GameObject playerModel;
+
+    public static event Action<PlayerState> CurrentState;
+
     // Use this for initialization
     void Start()
     {
@@ -53,7 +57,7 @@ public class PlayerController : MonoBehaviour
         GameController.changeGameState += updateGameState;
         //PlayerAbilities.hide += playerHide;
         Hide.hide += playerHide;
-        hide = false;
+        hide = HideState.NOT_HIDDEN;
         anim.SetBool("Walk", true);
         _playerState = PlayerState.IDLE;
 
@@ -68,11 +72,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameState == GameState.PAUSED || gameState == GameState.WIN || hide)
+        if (gameState == GameState.PAUSED || gameState == GameState.WIN )
         {
             return;
         }
-        ChangeState(); 
+        ChangeState();
     }
 
     void updateGameState(GameState gameState)
@@ -80,10 +84,10 @@ public class PlayerController : MonoBehaviour
         this.gameState = gameState;
     }
 
-    void playerHide()
+    void playerHide(HideState state)
     {
-        hide = !hide;
-        _playerState = PlayerState.HIDE;
+        hide = state;
+        if (hide == HideState.HIDDEN) { _playerState = PlayerState.HIDE; }
     }
 
     void ChangeState()
@@ -110,7 +114,7 @@ public class PlayerController : MonoBehaviour
                 soundRadius.radius = walkRad;
                 break;
 
-            case PlayerState.SNEAK:
+            case PlayerState.SNEAK: 
                 Movement();
                 if (Input.GetAxis("Sneak") == 0) { _playerState = PlayerState.SNEAK_TO_WALKING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
@@ -128,7 +132,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.HIDE:
-                if (!hide) { _playerState = PlayerState.IDLE; }
+                if (hide == HideState.NOT_HIDDEN) { _playerState = PlayerState.IDLE; }
                 soundRadius.radius = hideRad;
                 break;
 
@@ -165,6 +169,7 @@ public class PlayerController : MonoBehaviour
             default:
                 break;
         }
+        if (CurrentState != null) { CurrentState(_playerState);}
     }
 
     //Helper function to get the movement direction

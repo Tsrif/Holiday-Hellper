@@ -58,6 +58,10 @@ public class Patrol : MonoBehaviour
 
     public LayerMask viewMask;
 
+    private bool playerHidden;
+
+    private PlayerState playersState;
+
 
 
 
@@ -81,15 +85,20 @@ public class Patrol : MonoBehaviour
     void OnEnable()
     {
         GameController.changeGameState += updateGameState;
+       // Hide.hide += playerHide;
+        PlayerController.CurrentState += playerState;
     }
 
     void OnDisable()
     {
         GameController.changeGameState -= updateGameState;
+       // Hide.hide -= playerHide;
+        PlayerController.CurrentState -= playerState;
     }
 
     void Update()
     {
+        
         //Stop the patrol 
         if (gameState == GameState.PAUSED || gameState == GameState.WIN)
         {
@@ -105,7 +114,7 @@ public class Patrol : MonoBehaviour
         distance = Vector3.Distance(transform.position, target.transform.position);
 
         //If the player is hiding then patrol can't see or hear them 
-        if (target.GetComponent<PlayerController>()._playerState == PlayerState.HIDE)
+        if (playersState == PlayerState.HIDE) //target.GetComponent<PlayerController>()._playerState == PlayerState.HIDE
         {
             canHear = false;
             canSee = false;
@@ -129,7 +138,7 @@ public class Patrol : MonoBehaviour
         if (other.gameObject == target)
         {
             //if the player enters our hearing field we can only hear them if they aren't sneaking
-            if (target.GetComponent<PlayerController>()._playerState == PlayerState.SNEAK)
+            if (playersState == PlayerState.SNEAK)
             {
                 directionTotarget = other.transform.position - transform.position;
                 canSee = CanSeePlayer(directionTotarget);
@@ -239,7 +248,7 @@ public class Patrol : MonoBehaviour
                 //set alerted to true
                 alerted = true;
                 //if we get too close and the player is hiding then swap back to patrolling
-                if (distance < 1 && target.GetComponent<PlayerController>().hide)
+                if (distance < 1 && playersState == PlayerState.HIDE) //target.GetComponent<PlayerController>().hide
                 { _patrolState = PatrolState.PATROLLING; }
                 if (!canSee || !canHear)
                 {
@@ -310,7 +319,7 @@ public class Patrol : MonoBehaviour
         if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
         {
             //draw a line between the patrol and the player
-            Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
+            //Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
             alerted = true;
             //can hear player
             return true;
@@ -334,7 +343,7 @@ public class Patrol : MonoBehaviour
                 if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
                 {
                     //draw a line between the patrol and the player
-                    Debug.DrawRay(transform.position, directionTotarget, Color.red, 2f, false);
+                    //Debug.DrawRay(transform.position, directionTotarget, Color.red, 2f, false);
                     alerted = true;
                     //can see player
                     return true;
@@ -343,6 +352,15 @@ public class Patrol : MonoBehaviour
         }
         //can't see player 
         return false;
+    }
+
+    void playerHide() {
+        playerHidden = !playerHidden;
+    }
+
+    void playerState(PlayerState state) {
+        //Debug.Log(playersState);
+        playersState = state;
     }
 
     /*

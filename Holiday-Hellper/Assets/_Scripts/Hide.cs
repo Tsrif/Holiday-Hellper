@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 public enum HideState { HIDDEN, NOT_HIDDEN };
-public class Hide : MonoBehaviour {
+public class Hide : MonoBehaviour
+{
 
     public GameObject player;
     public GameObject playerVisual;
@@ -14,47 +15,52 @@ public class Hide : MonoBehaviour {
 
     public int hideCount;
     public int hideLimit;
-    public static event Action hide;
+    public static event Action<HideState> hide;
     public Vector3 lastPos;
 
     private GameState gameState;
 
-    void Start () {
+    void Start()
+    {
         _hideState = HideState.NOT_HIDDEN;
-	}
+    }
     void OnEnable()
     {
         GameController.changeGameState += updateGameState;
-      
+
     }
 
     void OnDisable()
     {
         GameController.changeGameState -= updateGameState;
-     
+
     }
 
     //When the hide button is pressed, then hide. 
     //Uses States to keep track if hidden or not
     //Hiding works by just enabling and disabling certain components,
     //so the player is no longer visible. 
-    void Update () {
+    void Update()
+    {
         if (gameState == GameState.PAUSED || gameState == GameState.WIN)
         {
             return;
         }
 
-        if (Input.GetButtonDown("Hide")) {
+        if (Input.GetButtonDown("Hide"))
+        {
             if (_hideState == HideState.NOT_HIDDEN)
             {
                 //If we hit the limit or are carrying something, then don't hide anymore. 
-                if (hideCount == hideLimit || player.GetComponent<PlayerController>()._playerState == PlayerState.CARRYING) {
+                if (hideCount == hideLimit || player.GetComponent<PlayerController>()._playerState == PlayerState.CARRYING)
+                {
                     return;
                 }
                 _hideState = HideState.HIDDEN;
                 switchState();
             }
-            else {
+            else
+            {
                 _hideState = HideState.NOT_HIDDEN;
                 switchState();
             }
@@ -63,12 +69,10 @@ public class Hide : MonoBehaviour {
     }
 
 
-    void switchState() {
-        if (hide != null)
+    void switchState()
+    {
+        switch (_hideState)
         {
-            hide();
-        }
-        switch (_hideState) {
             case HideState.HIDDEN:
                 hideStuff();
                 hideCount++;
@@ -81,6 +85,10 @@ public class Hide : MonoBehaviour {
             default:
                 break;
         }
+        if (hide != null)
+        {
+            hide(_hideState);
+        }
     }
     private void OnGUI()
     {
@@ -88,9 +96,10 @@ public class Hide : MonoBehaviour {
         GUI.Label(rect, "Hides Left: " + (hideLimit - hideCount));
     }
 
-    void hideStuff() {
+    void hideStuff()
+    {
         player.GetComponent<CharacterController>().enabled = false;
-       // player.GetComponent<PlayerController>().enabled = false;
+        // player.GetComponent<PlayerController>().enabled = false;
         player.GetComponent<Interact>().enabled = false;
 
         playerVisual.SetActive(false);
@@ -99,9 +108,10 @@ public class Hide : MonoBehaviour {
         hole.transform.position = new Vector3(feetSpot.position.x, feetSpot.position.y + groundHeight, feetSpot.position.z);
     }
 
-    void unHide() {
+    void unHide()
+    {
         player.GetComponent<CharacterController>().enabled = true;
-       // player.GetComponent<PlayerController>().enabled = true;
+        // player.GetComponent<PlayerController>().enabled = true;
         player.GetComponent<Interact>().enabled = true;
         hole.GetComponent<MeshRenderer>().enabled = false;
         playerVisual.SetActive(true);
