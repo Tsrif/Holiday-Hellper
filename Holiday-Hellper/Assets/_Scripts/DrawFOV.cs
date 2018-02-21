@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 /*
     * Basically everytin in here is code I took from a video I watched
-    * Tbh I don't really understand a lot of it right now
+    * Tbh I don't really understand a lot of it right now but I have been able to change it around to fit what I need so ¯\_(ツ)_/¯
     */
 
 public class DrawFOV : MonoBehaviour
@@ -17,6 +17,7 @@ public class DrawFOV : MonoBehaviour
 
     public MeshFilter viewMeshFilter;
     public Mesh viewMesh;
+
 
     // Use this for initialization
     void Awake()
@@ -107,4 +108,6 @@ public class DrawFOV : MonoBehaviour
             angle = _angle;
         }
     }
+
+   
 }

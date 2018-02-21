@@ -93,7 +93,7 @@ ModelImporter:
     400084: mixamorig:Spine2
     2100000: Material
     4300000: Body
-    7400000: mixamo.com
+    7400000: T-Pose Hellper
     9500000: //RootNode
     13700000: Body
   externalObjects: {}
@@ -109,14 +109,7 @@ ModelImporter:
     optimizeGameObjects: 0
     motionNodeName: 
     rigImportErrors: 
-    rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
-      copied configuration does not match position in animation file:\n\t'mixamorig:LeftUpLeg'
-      : position error = 8508.079102 mm\n\t'mixamorig:LeftLeg' : position error =
-      43609.328125 mm\n\t'mixamorig:LeftFoot' : position error = 40538.253906 mm\n\t'mixamorig:LeftToeBase'
-      : position error = 12119.569336 mm\n\t'mixamorig:RightUpLeg' : position error
-      = 8506.341797 mm\n\t'mixamorig:RightLeg' : position error = 43610.949219 mm\n\t'mixamorig:RightFoot'
-      : position error = 40535.367188 mm\n\t'mixamorig:RightToeBase' : position error
-      = 12115.076172 mm\n"
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -129,7 +122,35 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: T-Pose Hellper
+      takeName: mixamo.com
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []

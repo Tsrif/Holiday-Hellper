@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING, WALKING_TO_SNEAK, SNEAK_TO_WALKING };
+public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING, WALKING_TO_SNEAK, SNEAK_TO_WALKING,WALK_TO_IDLE };
 public enum PlayerVisibility { NOTVISIBLE, VISIBLE };
 public class PlayerController : MonoBehaviour
 {
@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
         switch (_playerState)
         {
             case PlayerState.IDLE:
-                Movement();
+                Movement(0);
                 if (Input.GetAxis("Sneak") > 0) {_playerState = PlayerState.WALKING_TO_SNEAK;}
                 if (Input.GetAxis("Run") > 0) { _playerState = PlayerState.RUNNING; }
                 if (Input.GetAxis("Vertical") != 0|| Input.GetAxis("Horizontal") != 0) { _playerState = PlayerState.WALKING; }
@@ -105,30 +105,27 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.WALKING:
-                Movement();
+                Movement(walkSpeed);
                 if (Input.GetAxis("Sneak") > 0) { _playerState = PlayerState.WALKING_TO_SNEAK; }
                 if (Input.GetAxis("Run") > 0) { _playerState = PlayerState.RUNNING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
                 if (getMoveDir() == 0) { _playerState = PlayerState.IDLE; }
-                moveSpeed = walkSpeed;
                 soundRadius.radius = walkRad;
                 break;
 
-            case PlayerState.SNEAK: 
-                Movement();
+            case PlayerState.SNEAK:
+                Movement(sneakSpeed);
                 if (Input.GetAxis("Sneak") == 0) { _playerState = PlayerState.SNEAK_TO_WALKING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
-                moveSpeed = sneakSpeed;
                 soundRadius.radius = sneakRad;
                 break;
 
             case PlayerState.RUNNING:
-                Movement();
+                Movement(runSpeed);
                 if (Input.GetAxis("Sneak") > 0) { _playerState = PlayerState.SNEAK; }
                 if (Input.GetAxis("Run") == 0) { _playerState = PlayerState.IDLE; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
                 soundRadius.radius = runningRad;
-                moveSpeed = runSpeed;
                 break;
 
             case PlayerState.HIDE:
@@ -137,10 +134,9 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.CARRYING:
-                Movement();
+                Movement(sneakSpeed);
                 if (!interact.carrying) { _playerState = PlayerState.IDLE; }
                 anim.SetBool("Walk", false);
-                moveSpeed = sneakSpeed;
                 soundRadius.radius = carryingRad;
                 break;
 
@@ -166,6 +162,12 @@ public class PlayerController : MonoBehaviour
                 _playerState = PlayerState.WALKING;
                 break;
 
+            case PlayerState.WALK_TO_IDLE:
+                anim.SetBool("Walk", false);
+                anim.SetTrigger("Stop Walk");
+                _playerState = PlayerState.IDLE;
+                break;
+
             default:
                 break;
         }
@@ -180,7 +182,7 @@ public class PlayerController : MonoBehaviour
         return temp1 + temp2;
     }
 
-    void Movement() {
+    void Movement(float moveSpeed) {
         float y = moveDirection.y;
         moveDirection = (transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"));
         moveDirection = moveDirection.normalized * moveSpeed;
@@ -189,14 +191,12 @@ public class PlayerController : MonoBehaviour
         anim.SetFloat("BlendY", controller.velocity.z);
         moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale * Time.deltaTime);
         controller.Move(moveDirection * Time.deltaTime);
-
         //move player in different directions based on camera direction
         if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
         {
             transform.rotation = Quaternion.Euler(0f, pivot.rotation.eulerAngles.y, 0f);
             Quaternion newRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
             playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
-
         }
     }
 

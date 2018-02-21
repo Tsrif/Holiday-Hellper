@@ -7,7 +7,7 @@ using UnityEngine.AI;
 //Patrol - Walks between set points
 //Pursuing - Chases player
 //Similar to Patrol, but now radius to notice player is much larger 
-public enum PatrolState { PATROLLING, PURSUING, VIGILANT, WANDER };
+public enum PatrolState { PATROLLING, PURSUING, VIGILANT, WANDER, SEARCH };
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(SphereCollider))]
@@ -50,7 +50,7 @@ public class Patrol : MonoBehaviour
                          //Alerted triggered after pursuing state set 
                          //Uses coroutine to turn alerted off
 
-
+    public bool search;
     public bool canHear;
     public bool canSee;
 
@@ -68,6 +68,8 @@ public class Patrol : MonoBehaviour
     public PatrolState _patrolState;
 
     private GameState gameState = GameState.PLAYING;
+    [SpaceAttribute]
+    public Vector3 offsetVector;
 
 
     // Use this for initialization
@@ -85,20 +87,20 @@ public class Patrol : MonoBehaviour
     void OnEnable()
     {
         GameController.changeGameState += updateGameState;
-       // Hide.hide += playerHide;
+        // Hide.hide += playerHide;
         PlayerController.CurrentState += playerState;
     }
 
     void OnDisable()
     {
         GameController.changeGameState -= updateGameState;
-       // Hide.hide -= playerHide;
+        // Hide.hide -= playerHide;
         PlayerController.CurrentState -= playerState;
     }
 
     void Update()
     {
-        
+
         //Stop the patrol 
         if (gameState == GameState.PAUSED || gameState == GameState.WIN)
         {
@@ -120,11 +122,7 @@ public class Patrol : MonoBehaviour
             canSee = false;
         }
 
-        //if patrol can see or hear player then pursue them
-        if (canSee || canHear)
-        {
-            _patrolState = PatrolState.PURSUING;
-        }
+
 
         //the local scale of the z will mess with the hearingRadius' radius, so multiple by z
         viewDistance = hearingRadius.radius * transform.localScale.z;
@@ -140,12 +138,13 @@ public class Patrol : MonoBehaviour
             //if the player enters our hearing field we can only hear them if they aren't sneaking
             if (playersState == PlayerState.SNEAK)
             {
-                directionTotarget = other.transform.position - transform.position;
+                directionTotarget = (other.transform.position - transform.position);
                 canSee = CanSeePlayer(directionTotarget);
                 return;
             }
 
-            directionTotarget = other.transform.position - transform.position;
+            //WITHOUT THAT STUPID OFFSET VECTOR PATROL WILL AIM AT PLAYERS FEET AND RUIN EVERYTHING
+            directionTotarget = ((target.transform.position + offsetVector) - transform.position);
             canSee = CanSeePlayer(directionTotarget); //checks to see if player is in field of view
             canHear = CanHearPlayer(directionTotarget); //checks to see if anything is obstructing hearing radius, patrol can't hear through walls with this
         }
@@ -161,6 +160,7 @@ public class Patrol : MonoBehaviour
 
             if (other.gameObject == target)
             {
+                alerted = true;
                 _patrolState = PatrolState.PATROLLING;
 
             }
@@ -229,12 +229,24 @@ public class Patrol : MonoBehaviour
                 //move the patrol 
                 if (agent.remainingDistance <= 1 || agent.destination == null)
                 { getNewDestination(); }
+                //if patrol can see or hear player then pursue them
+                if (canSee || canHear)
+                {
+                    _patrolState = PatrolState.PURSUING;
+                }
                 if (alerted)
                 {
-                    //change state to alerted then start coroutine
+                    //change state to vigilant then start coroutine
                     _patrolState = PatrolState.VIGILANT;
-                    StartCoroutine(CountDown());
+                    StartCoroutine(CountDownVig(vigilantTime));
                 }
+                if (search)
+                {
+                    //change state to search then start coroutine
+                    _patrolState = PatrolState.SEARCH;
+                    StartCoroutine(CountDownSearch(vigilantTime));
+                }
+
                 break;
 
             case PatrolState.PURSUING:
@@ -245,14 +257,19 @@ public class Patrol : MonoBehaviour
                 //Changes the animation depending on the speed the agent is moving
                 anim.SetFloat("BlendX", agent.velocity.x);
                 anim.SetFloat("BlendY", agent.velocity.z);
-                //set alerted to true
-                alerted = true;
+                //If they hide while we are pursuing them
+
                 //if we get too close and the player is hiding then swap back to patrolling
-                if (distance < 1 && playersState == PlayerState.HIDE) //target.GetComponent<PlayerController>().hide
-                { _patrolState = PatrolState.PATROLLING; }
-                if (!canSee || !canHear)
+                //if (distance < 1 ) //target.GetComponent<PlayerController>().hide
+                //{ _patrolState = PatrolState.PATROLLING; }
+                if (!canSee && !canHear)
                 {
-                    _patrolState = PatrolState.PATROLLING;
+                    if (playersState == PlayerState.HIDE)
+                    {  //change state to search then start coroutine
+                        search = true;
+                        _patrolState = PatrolState.SEARCH;
+                        StartCoroutine(CountDownSearch(vigilantTime));
+                    }
                 }
                 break;
 
@@ -294,8 +311,24 @@ public class Patrol : MonoBehaviour
                 {
                     //change state to alerted then start coroutine
                     _patrolState = PatrolState.VIGILANT;
-                    StartCoroutine(CountDown());
+                    StartCoroutine(CountDownVig(vigilantTime));
                 }
+                break;
+
+            case PatrolState.SEARCH:
+                //half the speed of walking 
+                agent.speed = walkSpeed / 2;
+                //Changes the animation depending on the speed the agent is moving
+                anim.SetFloat("BlendX", agent.velocity.x);
+                anim.SetFloat("BlendY", agent.velocity.z);
+                //move the patrol 
+                if (agent.remainingDistance <= 1 || agent.destination == null || agent.velocity.magnitude == 0)
+                {
+                    Vector3 newPos = RandomNavSphere(transform.position, wanderDistance / 4, 9);
+                    agent.SetDestination(newPos);
+                }
+                if (canHear || canSee) { _patrolState = PatrolState.PURSUING; }
+                if (!search) { _patrolState = PatrolState.PATROLLING; }
                 break;
 
             default:
@@ -303,11 +336,18 @@ public class Patrol : MonoBehaviour
         }
     }
 
-    IEnumerator CountDown()
+    IEnumerator CountDownVig(float time)
     {
-        yield return new WaitForSeconds(vigilantTime);
+        yield return new WaitForSeconds(time);
         alerted = false;
-        StopCoroutine(CountDown());
+        StopCoroutine(CountDownVig(time));
+    }
+
+    IEnumerator CountDownSearch(float time)
+    {
+        yield return new WaitForSeconds(time);
+        search = false;
+        StopCoroutine(CountDownSearch(time));
     }
 
 
@@ -320,7 +360,7 @@ public class Patrol : MonoBehaviour
         {
             //draw a line between the patrol and the player
             //Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
-            alerted = true;
+            //alerted = true;
             //can hear player
             return true;
         }
@@ -330,21 +370,21 @@ public class Patrol : MonoBehaviour
 
     bool CanSeePlayer(Vector3 dirToTarget)
     {
-        directionTotarget = dirToTarget;
         //if player is within the view distance
         if (distance < viewDistance)
         {
             //returns the smallest angle between the two
-            float angleBetweenGuardAndPlayer = Vector3.Angle(transform.forward, directionTotarget);
+            float angleBetweenGuardAndPlayer = Vector3.Angle(transform.forward, dirToTarget);
+             //Debug.Log(angleBetweenGuardAndPlayer);
             //check if the angle between patrol's forward direction and the direction to player is within the view angle
-            if (angleBetweenGuardAndPlayer < fovAngle / 2f)
+            if (angleBetweenGuardAndPlayer < fovAngle / 2)
             {
+                
                 //check if line of sight of the guard is blocked
                 if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
                 {
                     //draw a line between the patrol and the player
-                    //Debug.DrawRay(transform.position, directionTotarget, Color.red, 2f, false);
-                    alerted = true;
+                    //Debug.DrawRay(transform.position, dirToTarget, Color.red, 2f, false);
                     //can see player
                     return true;
                 }
@@ -354,11 +394,13 @@ public class Patrol : MonoBehaviour
         return false;
     }
 
-    void playerHide() {
+    void playerHide()
+    {
         playerHidden = !playerHidden;
     }
 
-    void playerState(PlayerState state) {
+    void playerState(PlayerState state)
+    {
         //Debug.Log(playersState);
         playersState = state;
     }
