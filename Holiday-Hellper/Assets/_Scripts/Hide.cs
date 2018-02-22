@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 public enum HideState { HIDDEN, NOT_HIDDEN };
+
 public class Hide : MonoBehaviour
 {
 
@@ -15,7 +16,7 @@ public class Hide : MonoBehaviour
 
     public int hideCount;
     public int hideLimit;
-    public static event Action<HideState> hide;
+    public static event Action<HideState> hide; //Hide sends notification to player to change states, player then broadcasts what state they are in 
     public Vector3 lastPos;
 
     private GameState gameState;

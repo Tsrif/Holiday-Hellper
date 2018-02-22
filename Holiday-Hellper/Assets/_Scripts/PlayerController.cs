@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed;
     public float sneakSpeed;
     public float runSpeed;
-
+    [SpaceAttribute]
     public CharacterController controller;
     public Vector3 moveDirection;
     public float gravityScale;
@@ -39,10 +39,16 @@ public class PlayerController : MonoBehaviour
     public Transform pivot;
     public float rotateSpeed;
     public GameObject playerModel;
+    [SpaceAttribute]
+
+    //All the input 
+    public float verticalInput;
+    public float horizontalInput;
+    public float sneakInput;
+    public float runInput;
 
     public static event Action<PlayerState> CurrentState;
 
-    // Use this for initialization
     void Start()
     {
         _playerVisibility = PlayerVisibility.NOTVISIBLE;
@@ -55,7 +61,6 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         GameController.changeGameState += updateGameState;
-        //PlayerAbilities.hide += playerHide;
         Hide.hide += playerHide;
         hide = HideState.NOT_HIDDEN;
         anim.SetBool("Walk", true);
@@ -66,16 +71,16 @@ public class PlayerController : MonoBehaviour
     void OnDisable()
     {
         GameController.changeGameState -= updateGameState;
-        //PlayerAbilities.hide -= playerHide;
         Hide.hide -= playerHide;
     }
-    // Update is called once per frame
+
     void Update()
     {
         if (gameState == GameState.PAUSED || gameState == GameState.WIN )
         {
             return;
         }
+        GetInput();
         ChangeState();
     }
 
@@ -96,9 +101,9 @@ public class PlayerController : MonoBehaviour
         {
             case PlayerState.IDLE:
                 Movement(0);
-                if (Input.GetAxis("Sneak") > 0) {_playerState = PlayerState.WALKING_TO_SNEAK;}
-                if (Input.GetAxis("Run") > 0) { _playerState = PlayerState.RUNNING; }
-                if (Input.GetAxis("Vertical") != 0|| Input.GetAxis("Horizontal") != 0) { _playerState = PlayerState.WALKING; }
+                if (sneakInput> 0) {_playerState = PlayerState.WALKING_TO_SNEAK;}
+                if (runInput > 0) { _playerState = PlayerState.RUNNING; }
+                if (verticalInput != 0|| horizontalInput != 0) { _playerState = PlayerState.WALKING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
                 anim.SetBool("Walk", true);
                 soundRadius.radius = idleRad;
@@ -106,8 +111,8 @@ public class PlayerController : MonoBehaviour
 
             case PlayerState.WALKING:
                 Movement(walkSpeed);
-                if (Input.GetAxis("Sneak") > 0) { _playerState = PlayerState.WALKING_TO_SNEAK; }
-                if (Input.GetAxis("Run") > 0) { _playerState = PlayerState.RUNNING; }
+                if (sneakInput > 0) { _playerState = PlayerState.WALKING_TO_SNEAK; }
+                if (runInput > 0) { _playerState = PlayerState.RUNNING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
                 if (getMoveDir() == 0) { _playerState = PlayerState.IDLE; }
                 soundRadius.radius = walkRad;
@@ -115,15 +120,15 @@ public class PlayerController : MonoBehaviour
 
             case PlayerState.SNEAK:
                 Movement(sneakSpeed);
-                if (Input.GetAxis("Sneak") == 0) { _playerState = PlayerState.SNEAK_TO_WALKING; }
+                if (sneakInput == 0) { _playerState = PlayerState.SNEAK_TO_WALKING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
                 soundRadius.radius = sneakRad;
                 break;
 
             case PlayerState.RUNNING:
                 Movement(runSpeed);
-                if (Input.GetAxis("Sneak") > 0) { _playerState = PlayerState.SNEAK; }
-                if (Input.GetAxis("Run") == 0) { _playerState = PlayerState.IDLE; }
+                if (sneakInput > 0) { _playerState = PlayerState.SNEAK; }
+                if (runInput == 0) { _playerState = PlayerState.IDLE; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
                 soundRadius.radius = runningRad;
                 break;
@@ -174,6 +179,18 @@ public class PlayerController : MonoBehaviour
         if (CurrentState != null) { CurrentState(_playerState);}
     }
 
+    void GetInput() {
+        //Horizontal
+        horizontalInput = Input.GetAxis("Horizontal");
+        // vertical
+        verticalInput = Input.GetAxis("Vertical");
+        //sneak 
+        sneakInput = Input.GetAxis("Sneak");
+        // run 
+        runInput = Input.GetAxis("Run");
+        // punch 
+    }
+
     //Helper function to get the movement direction
     //Ignores Y
     float getMoveDir() {
@@ -184,7 +201,7 @@ public class PlayerController : MonoBehaviour
 
     void Movement(float moveSpeed) {
         float y = moveDirection.y;
-        moveDirection = (transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"));
+        moveDirection = (transform.forward * verticalInput) + (transform.right * horizontalInput);
         moveDirection = moveDirection.normalized * moveSpeed;
         moveDirection.y = y;
         anim.SetFloat("BlendX", controller.velocity.x);
@@ -192,7 +209,7 @@ public class PlayerController : MonoBehaviour
         moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale * Time.deltaTime);
         controller.Move(moveDirection * Time.deltaTime);
         //move player in different directions based on camera direction
-        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+        if (horizontalInput != 0 || verticalInput != 0)
         {
             transform.rotation = Quaternion.Euler(0f, pivot.rotation.eulerAngles.y, 0f);
             Quaternion newRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
