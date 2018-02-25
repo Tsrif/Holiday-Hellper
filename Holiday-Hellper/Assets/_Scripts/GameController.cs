@@ -6,13 +6,13 @@ using System;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
-public enum GameState {PLAYING, PLAYING_TO_PAUSED, PAUSED, PAUSED_TO_PLAYING, WIN, LOSE};
+public enum GameState { PLAYING, PLAYING_TO_PAUSED, PAUSED, PAUSED_TO_PLAYING, WIN, LOSE };
 
 
 public class GameController : MonoBehaviour
 {
 
-    private GameState _gameState;
+    public GameState _gameState;
     public GameObject PauseHolder;
     public GameObject Winholder;
     public GameObject loseHolder;
@@ -63,7 +63,6 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         switch (gameState)
         {
             case GameState.PLAYING:
@@ -122,8 +121,9 @@ public class GameController : MonoBehaviour
         Winholder.SetActive(true);
     }
 
-    public void Lose() {
-        Cursor.lockState = CursorLockMode.Locked;
+    public void Lose()
+    {
+        Cursor.lockState = CursorLockMode.None;
         gameState = GameState.LOSE;
         defaultLoseButton.Select();
         loseHolder.SetActive(true);

@@ -1,10 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-/*
-    * Basically everytin in here is code I took from a video I watched
-    * Tbh I don't really understand a lot of it right now but I have been able to change it around to fit what I need so ¯\_(ツ)_/¯
-    */
+
 
 public class DrawFOV : MonoBehaviour
 {

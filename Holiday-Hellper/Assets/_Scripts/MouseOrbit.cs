@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MouseOrbit : MonoBehaviour {
+public class MouseOrbit : MonoBehaviour
+{
 
     public Transform target;
     public float distance = 5.0f;
@@ -34,18 +35,16 @@ public class MouseOrbit : MonoBehaviour {
     private void OnEnable()
     {
         GameController.changeGameState += updateGameState;
-        PlayerAbilities.hide += playerHide;
     }
     private void OnDisable()
     {
         GameController.changeGameState -= updateGameState;
-        PlayerAbilities.hide -= playerHide;
     }
 
     void LateUpdate()
     {
 
-        if (gameState == GameState.PAUSED || gameState == GameState.WIN || hide)
+        if (gameState == GameState.PAUSED || gameState == GameState.WIN || gameState == GameState.LOSE)
         {
             return;
         }

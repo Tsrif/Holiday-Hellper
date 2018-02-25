@@ -50,4 +50,5 @@ public class Stun : MonoBehaviour {
     {
         this.gameState = gameState;
     }
+
 }

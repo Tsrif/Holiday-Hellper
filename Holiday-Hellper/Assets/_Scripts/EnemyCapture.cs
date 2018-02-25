@@ -9,14 +9,11 @@ public class EnemyCapture : MonoBehaviour
     public float time;
     public float countDown;
     [SpaceAttribute]
-    public Texture2D progress_empty;
-    public Texture2D progress_full;
-    [SpaceAttribute]
     public GameObject bar;
     public float increment;
     public bool inside;
     public Patrol patrol;
-    
+
 
     private void Start()
     {
@@ -24,10 +21,19 @@ public class EnemyCapture : MonoBehaviour
         bar.SetActive(false);
     }
 
-   
+    private void OnEnable()
+    {
+        Hide.hide += playerHidden;
+    }
+
+    private void OnDisable()
+    {
+        Hide.hide -= playerHidden;
+    }
+
+
     private void Update()
     {
-
         bar.GetComponent<Slider>().value = countDown;
         if (!inside && countDown > 0)
         {
@@ -37,6 +43,7 @@ public class EnemyCapture : MonoBehaviour
         if (countDown == 0) { bar.SetActive(false); }
 
     }
+
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject == target && patrol._patrolState != PatrolState.STUNNED)
@@ -58,11 +65,18 @@ public class EnemyCapture : MonoBehaviour
         }
     }
 
+    //inside set to false on exit
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject == target)
         {
             inside = false;
         }
+    }
+
+    //inside set to false when player is hidden 
+    void playerHidden(HideState state)
+    {
+        if (state == HideState.HIDDEN) { inside = false; }
     }
 }
