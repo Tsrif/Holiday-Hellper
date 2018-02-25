@@ -29,4 +29,11 @@ public class UI : MonoBehaviour {
         SceneManager.LoadScene("MainMenu");
     }
 
+    public void Restart() {
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
+    }
+
+
+
 }

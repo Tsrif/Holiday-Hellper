@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (gameState == GameState.PAUSED || gameState == GameState.WIN )
+        if (gameState == GameState.PAUSED || gameState == GameState.WIN || gameState == GameState.LOSE )
         {
             return;
         }

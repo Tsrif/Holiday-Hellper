@@ -6,7 +6,7 @@ using System;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
-public enum GameState {PLAYING, PLAYING_TO_PAUSED, PAUSED, PAUSED_TO_PLAYING, WIN};
+public enum GameState {PLAYING, PLAYING_TO_PAUSED, PAUSED, PAUSED_TO_PLAYING, WIN, LOSE};
 
 
 public class GameController : MonoBehaviour
@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour
     private GameState _gameState;
     public GameObject PauseHolder;
     public GameObject Winholder;
+    public GameObject loseHolder;
     //public GameObject defaultPause;
     //public GameObject defaultWin;
     //public EventSystem ES;
@@ -22,6 +23,7 @@ public class GameController : MonoBehaviour
 
     public Button defaultWinButton;
     public Button defaultPauseButton;
+    public Button defaultLoseButton;
 
 
     public static event Action<GameState> changeGameState;
@@ -51,12 +53,12 @@ public class GameController : MonoBehaviour
     private void OnEnable()
     {
         HoleController.winCondition += win;
-        EnemyCapture.caught += caught;
+        EnemyCapture.caught += Lose;
     }
     private void OnDisable()
     {
         HoleController.winCondition -= win;
-        EnemyCapture.caught -= caught;
+        EnemyCapture.caught -= Lose;
     }
     // Update is called once per frame
     void Update()
@@ -87,7 +89,6 @@ public class GameController : MonoBehaviour
                 Cursor.lockState = CursorLockMode.Locked;
                 switchToPlaying();
                 break;
-
         }
     }
 
@@ -115,12 +116,16 @@ public class GameController : MonoBehaviour
 
     public void win()
     {
-
         Cursor.lockState = CursorLockMode.None;
         gameState = GameState.WIN;
         defaultWinButton.Select();
         Winholder.SetActive(true);
+    }
 
-
+    public void Lose() {
+        Cursor.lockState = CursorLockMode.Locked;
+        gameState = GameState.LOSE;
+        defaultLoseButton.Select();
+        loseHolder.SetActive(true);
     }
 }
