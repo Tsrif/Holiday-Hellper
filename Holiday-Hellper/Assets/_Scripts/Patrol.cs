@@ -56,6 +56,7 @@ public class Patrol : MonoBehaviour
     public bool canSee;
 
     public bool wander;
+    public bool inside;
 
     public LayerMask viewMask;
 
@@ -69,6 +70,7 @@ public class Patrol : MonoBehaviour
     [SpaceAttribute]
 
     public Vector3 offsetVector;
+    public float reactionTime;
 
 
     // Use this for initialization
@@ -80,6 +82,7 @@ public class Patrol : MonoBehaviour
         agent.avoidancePriority = Random.Range(1, 100);
         hearingRadius = GetComponent<SphereCollider>();
         alerted = false;
+        StartCoroutine(ReactionDelay(reactionTime));
 
     }
 
@@ -132,6 +135,9 @@ public class Patrol : MonoBehaviour
     {
         if (other.gameObject == target)
         {
+            inside = true;
+            directionTotarget = ((target.transform.position + offsetVector) - transform.position);
+            /*
             //WITHOUT THAT STUPID OFFSET VECTOR PATROL WILL AIM AT PLAYERS FEET AND RUIN EVERYTHING
             directionTotarget = ((target.transform.position + offsetVector) - transform.position);
             //if the player enters our hearing field we can only hear them if they aren't sneaking
@@ -143,6 +149,8 @@ public class Patrol : MonoBehaviour
 
             canSee = CanSeePlayer(directionTotarget); //checks to see if player is in field of view
             canHear = CanHearPlayer(directionTotarget); //checks to see if anything is obstructing hearing radius, patrol can't hear through walls with this
+        */
+
         }
     }
 
@@ -360,7 +368,8 @@ public class Patrol : MonoBehaviour
         StopCoroutine(CountDown(time, boolToChange));
     }
 
-    IEnumerator Stunned(float time) {
+    IEnumerator Stunned(float time)
+    {
         stunned = true;
         yield return new WaitForSeconds(time);
         stunned = false;
@@ -368,9 +377,30 @@ public class Patrol : MonoBehaviour
     }
 
 
+    IEnumerator ReactionDelay(float time)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(time);
+            if (playersState == PlayerState.SNEAK)
+            {
+                canSee = CanSeePlayer(directionTotarget);
+            }
+            else
+            {
+                canSee = CanSeePlayer(directionTotarget);
+                canHear = CanHearPlayer(directionTotarget);
+            }
+
+        }
+    }
+
+
     //Used to make it so patrol can't hear player through walls
     bool CanHearPlayer(Vector3 dirToTarget)
     {
+        //If the player isn't inside return false 
+        if (!inside) { return false; }
         //check if something is blocking hearing of the patrol
         if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
         {
@@ -387,6 +417,8 @@ public class Patrol : MonoBehaviour
 
     bool CanSeePlayer(Vector3 dirToTarget)
     {
+        //If the player isn't inside return false 
+        if (!inside) { return false; }
         //if player is within the view distance
         if (distance < viewDistance)
         {
@@ -422,8 +454,10 @@ public class Patrol : MonoBehaviour
         playersState = state;
     }
 
-    void stunPatrol(float stunTime) {
-        if (distance <=4) {
+    void stunPatrol(float stunTime)
+    {
+        if (distance <= 4)
+        {
             StartCoroutine(Stunned(stunTime));
             _patrolState = PatrolState.STUNNED;
         }

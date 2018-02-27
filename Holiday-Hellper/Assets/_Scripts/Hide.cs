@@ -20,6 +20,9 @@ public class Hide : MonoBehaviour
     public Vector3 lastPos;
 
     private GameState gameState;
+    public int manaCost;
+    public static event Action<int> manaSend;
+    public bool okayToUse;
 
     void Start()
     {
@@ -28,13 +31,14 @@ public class Hide : MonoBehaviour
     void OnEnable()
     {
         GameController.changeGameState += updateGameState;
-
+        //get from manaBar
+        ManaBar.useAbility_Hide += useAbility;
     }
 
     void OnDisable()
     {
         GameController.changeGameState -= updateGameState;
-
+        ManaBar.useAbility_Hide -= useAbility;
     }
 
     //When the hide button is pressed, then hide. 
@@ -52,13 +56,17 @@ public class Hide : MonoBehaviour
         {
             if (_hideState == HideState.NOT_HIDDEN)
             {
+                //check to see if it's okay to use the ability
+                if (manaSend != null) { manaSend(manaCost); }
                 //If we hit the limit or are carrying something, then don't hide anymore. 
-                if (hideCount == hideLimit || player.GetComponent<PlayerController>()._playerState == PlayerState.CARRYING)
+                if (hideCount == hideLimit || player.GetComponent<PlayerController>()._playerState == PlayerState.CARRYING || !okayToUse)
                 {
                     return;
                 }
                 _hideState = HideState.HIDDEN;
+
                 switchState();
+
             }
             else
             {
@@ -77,6 +85,7 @@ public class Hide : MonoBehaviour
             case HideState.HIDDEN:
                 hideStuff();
                 hideCount++;
+                okayToUse = false;
                 break;
             case HideState.NOT_HIDDEN:
                 unHide();
@@ -121,5 +130,10 @@ public class Hide : MonoBehaviour
     void updateGameState(GameState gameState)
     {
         this.gameState = gameState;
+    }
+
+    void useAbility()
+    {
+        okayToUse = true;
     }
 }
