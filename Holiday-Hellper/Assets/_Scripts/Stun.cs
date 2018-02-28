@@ -6,7 +6,7 @@ using System;
 public class Stun : MonoBehaviour
 {
     public static event Action<float> stun;
-    public static event Action<int> manaSend;
+	public static event Action<String, int> manaSend;
     private GameState gameState;
     public float stunTime; //how long the stun will last
     public float coolDown; //How long before you can use the ability again after using it
@@ -17,14 +17,14 @@ public class Stun : MonoBehaviour
     void OnEnable()
     {
         GameController.changeGameState += updateGameState;
-        ManaBar.useAbility_Stun += useAbility;
+        ManaBar.useAbility += useAbility;
 
     }
 
     void OnDisable()
     {
         GameController.changeGameState -= updateGameState;
-        ManaBar.useAbility_Stun -= useAbility;
+        ManaBar.useAbility -= useAbility;
     }
 
     // Update is called once per frame
@@ -38,8 +38,7 @@ public class Stun : MonoBehaviour
         if (Input.GetButtonDown("Stun") && !start)
         {
             //check to see if it's okay to use the ability
-            if (manaSend != null) { manaSend(manaCost); }
-            //if not okay then return;
+			if (manaSend != null) { manaSend(this.GetType().ToString(),manaCost); }
             if (okayToUse)
             {
                 //if okay then stun 
@@ -68,8 +67,11 @@ public class Stun : MonoBehaviour
         this.gameState = gameState;
     }
 
-    void useAbility()
-    {
-        okayToUse = true;
-    }
+	void useAbility(String me)
+	{
+		if(me == this.GetType().ToString()){
+			okayToUse = true;
+		}
+
+	}
 }

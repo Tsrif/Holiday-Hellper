@@ -21,7 +21,7 @@ public class Hide : MonoBehaviour
 
     private GameState gameState;
     public int manaCost;
-    public static event Action<int> manaSend;
+	public static event Action<String, int> manaSend;
     public bool okayToUse;
 
     void Start()
@@ -32,13 +32,15 @@ public class Hide : MonoBehaviour
     {
         GameController.changeGameState += updateGameState;
         //get from manaBar
-        ManaBar.useAbility_Hide += useAbility;
+      //  ManaBar.useAbility_Hide += useAbility;
+		ManaBar.useAbility += useAbility;
     }
 
     void OnDisable()
     {
         GameController.changeGameState -= updateGameState;
-        ManaBar.useAbility_Hide -= useAbility;
+       // ManaBar.useAbility_Hide -= useAbility;
+		ManaBar.useAbility -= useAbility;
     }
 
     //When the hide button is pressed, then hide. 
@@ -57,9 +59,9 @@ public class Hide : MonoBehaviour
             if (_hideState == HideState.NOT_HIDDEN)
             {
                 //check to see if it's okay to use the ability
-                if (manaSend != null) { manaSend(manaCost); }
-                //If we hit the limit or are carrying something, then don't hide anymore. 
-                if (hideCount == hideLimit || player.GetComponent<PlayerController>()._playerState == PlayerState.CARRYING || !okayToUse)
+				if (manaSend!= null) { manaSend(this.GetType().ToString(),manaCost); }
+				//hideCount == hideLimit || 
+                if (player.GetComponent<PlayerController>()._playerState == PlayerState.CARRYING || !okayToUse)
                 {
                     return;
                 }
@@ -89,8 +91,6 @@ public class Hide : MonoBehaviour
                 break;
             case HideState.NOT_HIDDEN:
                 unHide();
-                hole.GetComponent<MeshRenderer>().enabled = false;
-                //hole.SetActive(false);
                 break;
             default:
                 break;
@@ -100,11 +100,14 @@ public class Hide : MonoBehaviour
             hide(_hideState);
         }
     }
+
+	/*
     private void OnGUI()
     {
         Rect rect = new Rect(100, 10, 100, 20);
         GUI.Label(rect, "Hides Left: " + (hideLimit - hideCount));
     }
+	*/
 
     void hideStuff()
     {
@@ -132,8 +135,11 @@ public class Hide : MonoBehaviour
         this.gameState = gameState;
     }
 
-    void useAbility()
+	void useAbility(String me)
     {
-        okayToUse = true;
+		if(me == this.GetType().ToString()){
+			okayToUse = true;
+		}
+        
     }
 }
