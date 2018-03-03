@@ -36,6 +36,7 @@ public class ManaBar : MonoBehaviour
     {
 		Hide.manaSend += ManaCheck;
 		Stun.manaSend += ManaCheck;
+        CreateDecoy.manaSend += ManaCheck;
 
     }
 
@@ -43,6 +44,7 @@ public class ManaBar : MonoBehaviour
     {
 		Hide.manaSend -= ManaCheck;
 		Stun.manaSend -= ManaCheck;
+        CreateDecoy.manaSend -= ManaCheck;
     }
 
     // Update is called once per frame
@@ -65,7 +67,7 @@ public class ManaBar : MonoBehaviour
 
     IEnumerator RefillBar(float time)
     {
-
+        refill = false;
         yield return new WaitForSeconds(time);
         if (manaPool <= max) { refill = true; }
 

@@ -5,13 +5,14 @@ using System;
 
 public class Stun : MonoBehaviour
 {
-    public static event Action<float> stun;
-	public static event Action<String, int> manaSend;
-    private GameState gameState;
+    public static event Action<float> stun; //notifcation to send to patrol to stun them 
     public float stunTime; //how long the stun will last
     public float coolDown; //How long before you can use the ability again after using it
     public bool start; //true if the timer has been started
+
+    private GameState gameState;
     public int manaCost;
+    public static event Action<String, int> manaSend; //notification to send to manaBar 
     public bool okayToUse;
 
     void OnEnable()

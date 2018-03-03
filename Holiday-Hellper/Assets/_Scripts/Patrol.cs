@@ -64,6 +64,8 @@ public class Patrol : MonoBehaviour
 
     private PlayerState playersState;
 
+    public GameObject player;
+
     public PatrolState _patrolState;
 
     private GameState gameState = GameState.PLAYING;
@@ -91,6 +93,7 @@ public class Patrol : MonoBehaviour
         GameController.changeGameState += updateGameState;
         PlayerController.CurrentState += playerState;
         Stun.stun += stunPatrol;
+        CreateDecoy.decoySend += chaseDecoy;
     }
 
     void OnDisable()
@@ -98,6 +101,7 @@ public class Patrol : MonoBehaviour
         GameController.changeGameState -= updateGameState;
         PlayerController.CurrentState -= playerState;
         Stun.stun -= stunPatrol;
+        CreateDecoy.decoySend -= chaseDecoy;
     }
 
     void Update()
@@ -113,6 +117,8 @@ public class Patrol : MonoBehaviour
         {
             agent.isStopped = false;
         }
+
+        if (target == null) { target = player; inside = canSee = canHear = false; }//after the decoy is destroyed the current target is set back to the Player and values are reset back to false
 
         //Calculate the distance between the patrol and the player 
         distance = Vector3.Distance(transform.position, target.transform.position);
@@ -137,20 +143,6 @@ public class Patrol : MonoBehaviour
         {
             inside = true;
             directionTotarget = ((target.transform.position + offsetVector) - transform.position);
-            /*
-            //WITHOUT THAT STUPID OFFSET VECTOR PATROL WILL AIM AT PLAYERS FEET AND RUIN EVERYTHING
-            directionTotarget = ((target.transform.position + offsetVector) - transform.position);
-            //if the player enters our hearing field we can only hear them if they aren't sneaking
-            if (playersState == PlayerState.SNEAK)
-            {
-                canSee = CanSeePlayer(directionTotarget);
-                return;
-            }
-
-            canSee = CanSeePlayer(directionTotarget); //checks to see if player is in field of view
-            canHear = CanHearPlayer(directionTotarget); //checks to see if anything is obstructing hearing radius, patrol can't hear through walls with this
-        */
-
         }
     }
 
@@ -158,6 +150,7 @@ public class Patrol : MonoBehaviour
     // go back to wandering/patrolling
     private void OnTriggerExit(Collider other)
     {
+        inside = false;
         canHear = false;
         if (_patrolState == PatrolState.PURSUING)
         {
@@ -243,6 +236,7 @@ public class Patrol : MonoBehaviour
                 {
                     //change state to vigilant then start coroutine
                     _patrolState = PatrolState.VIGILANT;
+                    StopCoroutine(CountDown(vigilantTime, alerted));
                     StartCoroutine(CountDown(vigilantTime, alerted));
                 }
                 //swap to search
@@ -250,6 +244,7 @@ public class Patrol : MonoBehaviour
                 {
                     //change state to search then start coroutine
                     _patrolState = PatrolState.SEARCH;
+                    StopCoroutine(CountDown(vigilantTime, search));
                     StartCoroutine(CountDown(vigilantTime, search));
                 }
 
@@ -272,6 +267,7 @@ public class Patrol : MonoBehaviour
                         _patrolState = PatrolState.SEARCH;
                         StartCoroutine(CountDown(vigilantTime, alerted));
                     }
+                    _patrolState = PatrolState.PATROLLING;
                 }
                 break;
 
@@ -406,9 +402,6 @@ public class Patrol : MonoBehaviour
         {
             //draw a line between the patrol and the player
             //Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
-            //alerted = true;
-            //can hear player
-            alerted = true;
             return true;
         }
         return false;
@@ -428,7 +421,6 @@ public class Patrol : MonoBehaviour
             //check if the angle between patrol's forward direction and the direction to player is within the view angle
             if (angleBetweenGuardAndPlayer < fovAngle / 2)
             {
-
                 //check if line of sight of the guard is blocked
                 if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
                 {
@@ -461,6 +453,12 @@ public class Patrol : MonoBehaviour
             StartCoroutine(Stunned(stunTime));
             _patrolState = PatrolState.STUNNED;
         }
+    }
+
+    void chaseDecoy(GameObject decoy)
+    {
+
+        target = decoy;
     }
 
     /*

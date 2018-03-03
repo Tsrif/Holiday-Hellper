@@ -6,7 +6,6 @@ public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING, WALKING
 public enum PlayerVisibility { NOTVISIBLE, VISIBLE };
 public class PlayerController : MonoBehaviour
 {
-
     public float moveSpeed;
     public float walkSpeed;
     public float sneakSpeed;

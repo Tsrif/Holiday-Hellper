@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Kid
   - wall
+  - Decoy
   layers:
   - Default
   - TransparentFX
