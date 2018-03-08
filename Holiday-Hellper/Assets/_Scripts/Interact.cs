@@ -25,7 +25,7 @@ public class Interact : MonoBehaviour {
             if (nearChild == true)
             {
 
-                kid.transform.SetParent(transform);
+                kid.transform.SetParent(holder.transform);
                 rb = kid.GetComponent<Rigidbody>();
                 rb.isKinematic = true;
                 kid.transform.position = holder.transform.position;

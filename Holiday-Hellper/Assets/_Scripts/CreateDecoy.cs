@@ -2,53 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-//Currently the decoy just spawns in front of the player then moves forward for an amount of time
-//need to add in the functionality that the patrol changes its target to the decoy
 
 //Create a decoy object in front of the player 
-public class CreateDecoy : MonoBehaviour
+public class CreateDecoy : Ability
 {
     public GameObject decoyPrefab;
     public GameObject player;
-    private GameState gameState;
-    public int manaCost;
-    public static event Action<String, int> manaSend; //notification to send to manaBar 
     public static event Action<GameObject> decoySend;
-    public bool okayToUse;
     [SpaceAttribute]
     public float moveSpeed;
     public float time;
     public float spawnDistance;
     public float gravity;
 
-    void OnEnable()
-    {
-        GameController.changeGameState += updateGameState;
-        ManaBar.useAbility += useAbility;
-
-    }
-
-    void OnDisable()
-    {
-        GameController.changeGameState -= updateGameState;
-        ManaBar.useAbility -= useAbility;
-    }
-
     // Update is called once per frame
     void Update()
     {
-        if (gameState == GameState.PAUSED || gameState == GameState.WIN)
+        if (!CheckExceptions()) { return; }
+        if (Input.GetButtonDown("Decoy"))
         {
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (manaSend != null) { manaSend(this.GetType().ToString(), manaCost); }
-            if (okayToUse)
+            //check to see if it's okay to use the ability
+            if (CheckOkay(this.GetType().ToString(), manaCost))
             {
                 okayToUse = false;
                 createDecoy();
-                
             }
         }
     }
@@ -74,18 +51,5 @@ public class CreateDecoy : MonoBehaviour
         ds._aliveTime = time;
         ds._gravityScale = gravity;
         ds._moveDirection = moveDir;
-    }
-
-    void updateGameState(GameState gameState)
-    {
-        this.gameState = gameState;
-    }
-
-    void useAbility(String me)
-    {
-        if (me == this.GetType().ToString())
-        {
-            okayToUse = true;
-        }
     }
 }

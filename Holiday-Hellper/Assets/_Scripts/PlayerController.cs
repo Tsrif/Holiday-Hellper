@@ -141,6 +141,7 @@ public class PlayerController : MonoBehaviour
                 Movement(sneakSpeed);
                 if (!interact.carrying) { _playerState = PlayerState.IDLE; }
                 anim.SetBool("Walk", false);
+                anim.SetBool("Sneak", false);
                 soundRadius.radius = carryingRad;
                 break;
 

@@ -19,10 +19,10 @@ public class ManaBar : MonoBehaviour
     [SpaceAttribute]
     public GameObject bar;
     public float increment;
-	public static event Action<String> useAbility;
+    public static event Action<String> useAbility;
     public float fillAmount;
     public bool refill;
-	public String sendTo;
+    public String sendTo;
 
     // Use this for initialization
     void Start()
@@ -34,17 +34,12 @@ public class ManaBar : MonoBehaviour
 
     private void OnEnable()
     {
-		Hide.manaSend += ManaCheck;
-		Stun.manaSend += ManaCheck;
-        CreateDecoy.manaSend += ManaCheck;
-
+        Ability.ManaSend += ManaCheck;
     }
 
     private void OnDisable()
     {
-		Hide.manaSend -= ManaCheck;
-		Stun.manaSend -= ManaCheck;
-        CreateDecoy.manaSend -= ManaCheck;
+        Ability.ManaSend -= ManaCheck;
     }
 
     // Update is called once per frame
@@ -73,15 +68,16 @@ public class ManaBar : MonoBehaviour
 
     }
 
-	void ManaCheck(String sender, int cost){
-		if (manaPool - cost >= 0)
-		{
-			sendTo = sender;
-			manaPool -= cost;
-			fillAmount -= 0.1f * cost;
-			if (useAbility!= null) { useAbility(sendTo); }
-			StopAllCoroutines ();
-			StartCoroutine(RefillBar(time));
-		}
-	}
+    void ManaCheck(String sender, int cost)
+    {
+        if (manaPool - cost >= 0)
+        {
+            sendTo = sender;
+            manaPool -= cost;
+            fillAmount -= 0.1f * cost;
+            if (useAbility != null) { useAbility(sendTo); }
+            StopAllCoroutines();
+            StartCoroutine(RefillBar(time));
+        }
+    }
 }

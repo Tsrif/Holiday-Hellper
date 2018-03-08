@@ -4,9 +4,8 @@ using UnityEngine;
 using System;
 public enum HideState { HIDDEN, NOT_HIDDEN };
 
-public class Hide : MonoBehaviour
+public class Hide : Ability
 {
-
     public GameObject player;
     public GameObject playerVisual;
     public GameObject hole;
@@ -19,28 +18,9 @@ public class Hide : MonoBehaviour
     public static event Action<HideState> hide; //Hide sends notification to player to change states, player then broadcasts what state they are in 
     public Vector3 lastPos;
 
-    private GameState gameState;
-    public int manaCost;
-	public static event Action<String, int> manaSend;
-    public bool okayToUse;
-
     void Start()
     {
         _hideState = HideState.NOT_HIDDEN;
-    }
-    void OnEnable()
-    {
-        GameController.changeGameState += updateGameState;
-        //get from manaBar
-      //  ManaBar.useAbility_Hide += useAbility;
-		ManaBar.useAbility += useAbility;
-    }
-
-    void OnDisable()
-    {
-        GameController.changeGameState -= updateGameState;
-       // ManaBar.useAbility_Hide -= useAbility;
-		ManaBar.useAbility -= useAbility;
     }
 
     //When the hide button is pressed, then hide. 
@@ -49,26 +29,17 @@ public class Hide : MonoBehaviour
     //so the player is no longer visible. 
     void Update()
     {
-        if (gameState == GameState.PAUSED || gameState == GameState.WIN)
-        {
-            return;
-        }
-
+        if (!CheckExceptions()) { return; }
         if (Input.GetButtonDown("Hide"))
         {
             if (_hideState == HideState.NOT_HIDDEN)
             {
                 //check to see if it's okay to use the ability
-				if (manaSend!= null) { manaSend(this.GetType().ToString(),manaCost); }
-				//hideCount == hideLimit || 
-                if (player.GetComponent<PlayerController>()._playerState == PlayerState.CARRYING || !okayToUse)
+                if (CheckOkay(this.GetType().ToString(), manaCost))
                 {
-                    return;
+                    _hideState = HideState.HIDDEN;
+                    switchState();
                 }
-                _hideState = HideState.HIDDEN;
-
-                switchState();
-
             }
             else
             {
@@ -76,7 +47,6 @@ public class Hide : MonoBehaviour
                 switchState();
             }
         }
-
     }
 
 
@@ -101,7 +71,7 @@ public class Hide : MonoBehaviour
         }
     }
 
-	/*
+    /*
     private void OnGUI()
     {
         Rect rect = new Rect(100, 10, 100, 20);
@@ -128,18 +98,5 @@ public class Hide : MonoBehaviour
         player.GetComponent<Interact>().enabled = true;
         hole.GetComponent<MeshRenderer>().enabled = false;
         playerVisual.SetActive(true);
-    }
-
-    void updateGameState(GameState gameState)
-    {
-        this.gameState = gameState;
-    }
-
-	void useAbility(String me)
-    {
-		if(me == this.GetType().ToString()){
-			okayToUse = true;
-		}
-        
     }
 }
