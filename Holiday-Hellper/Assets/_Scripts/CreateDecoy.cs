@@ -14,6 +14,7 @@ public class CreateDecoy : Ability
     public float time;
     public float spawnDistance;
     public float gravity;
+    public GameObject SmokeEffect;
 
     // Update is called once per frame
     void Update()
@@ -22,10 +23,11 @@ public class CreateDecoy : Ability
         if (Input.GetButtonDown("Decoy"))
         {
             //check to see if it's okay to use the ability
-            if (CheckOkay(this.GetType().ToString(), manaCost))
+            CheckOkay(this.GetType().ToString(), manaCost);
+            if (okayToUse)
             {
-                okayToUse = false;
                 createDecoy();
+                okayToUse = false;
             }
         }
     }
@@ -51,5 +53,6 @@ public class CreateDecoy : Ability
         ds._aliveTime = time;
         ds._gravityScale = gravity;
         ds._moveDirection = moveDir;
+        ds.SmokeEffect = SmokeEffect;
     }
 }

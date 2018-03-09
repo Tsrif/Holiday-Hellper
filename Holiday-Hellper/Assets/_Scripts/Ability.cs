@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Ability : MonoBehaviour {
+public class Ability : MonoBehaviour
+{
 
     public GameState gameState; //the state the game is in
     public PlayerState playerState; //the state the player is in
@@ -26,7 +27,8 @@ public class Ability : MonoBehaviour {
     }
 
     //circumstances where an ability can NOT be used 
-    protected bool CheckExceptions() {
+    protected bool CheckExceptions()
+    {
         if (gameState == GameState.PAUSED || gameState == GameState.WIN || gameState == GameState.LOSE || playerState == PlayerState.CARRYING || okayToUse)
         {
             return false;
@@ -39,21 +41,22 @@ public class Ability : MonoBehaviour {
         this.gameState = gameState;
     }
 
-    protected void updatePlayerState(PlayerState state) {
+    protected void updatePlayerState(PlayerState state)
+    {
         this.playerState = state;
     }
 
     //Send a notification to see if an ability is okay to use 
-    protected bool CheckOkay(String sendString, int cost) {
-        if (ManaSend != null) {
+    protected void CheckOkay(String sendString, int cost)
+    {
+        if (ManaSend != null)
+        {
             ManaSend(this.GetType().ToString(), manaCost);
-            return true;
         }
-        return false;
     }
 
     //returns if an ability is okay to use or not 
-   protected void useAbility(String me)
+    protected void useAbility(String me)
     {
         if (me == this.GetType().ToString())
         {

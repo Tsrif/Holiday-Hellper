@@ -35,7 +35,8 @@ public class Hide : Ability
             if (_hideState == HideState.NOT_HIDDEN)
             {
                 //check to see if it's okay to use the ability
-                if (CheckOkay(this.GetType().ToString(), manaCost))
+                CheckOkay(this.GetType().ToString(), manaCost);
+                if (okayToUse)
                 {
                     _hideState = HideState.HIDDEN;
                     switchState();

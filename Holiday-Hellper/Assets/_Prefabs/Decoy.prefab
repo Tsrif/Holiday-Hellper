@@ -1440,6 +1440,7 @@ MonoBehaviour:
   _gravityScale: 0
   _aliveTime: 0
   _anim: {fileID: 0}
+  SmokeEffect: {fileID: 0}
 --- !u!137 &137581988171829216
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

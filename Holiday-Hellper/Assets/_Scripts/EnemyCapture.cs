@@ -13,27 +13,36 @@ public class EnemyCapture : MonoBehaviour
     public float increment;
     public bool inside;
     public Patrol patrol;
+    public GameState gameState;
 
 
     private void Start()
     {
+        target = GameObject.FindGameObjectWithTag("Player");
         bar.GetComponent<Slider>().maxValue = time;
         bar.SetActive(false);
     }
 
     private void OnEnable()
     {
+        GameController.changeGameState += updateGameState;
         Hide.hide += playerHidden;
     }
 
     private void OnDisable()
     {
+        GameController.changeGameState -= updateGameState;
         Hide.hide -= playerHidden;
     }
 
 
     private void Update()
     {
+        if (gameState == GameState.PAUSED || gameState == GameState.WIN || gameState == GameState.LOSE)
+        {
+            return;
+        }
+
         bar.GetComponent<Slider>().value = countDown;
         if (!inside && countDown > 0)
         {
@@ -46,6 +55,10 @@ public class EnemyCapture : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        if (gameState == GameState.PAUSED || gameState == GameState.WIN || gameState == GameState.LOSE)
+        {
+            return;
+        }
         if (other.gameObject == target && patrol._patrolState != PatrolState.STUNNED)
         {
             bar.SetActive(true);
@@ -72,6 +85,11 @@ public class EnemyCapture : MonoBehaviour
         {
             inside = false;
         }
+    }
+
+    void updateGameState(GameState gameState)
+    {
+        this.gameState = gameState;
     }
 
     //inside set to false when player is hidden 

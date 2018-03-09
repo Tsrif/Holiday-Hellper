@@ -78,6 +78,7 @@ public class Patrol : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
         _patrolState = PatrolState.PATROLLING;
         wanderIndex = 0;
         agent = GetComponent<NavMeshAgent>();

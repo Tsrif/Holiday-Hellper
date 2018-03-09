@@ -15,10 +15,14 @@ public class Decoy : MonoBehaviour
 
     [SpaceAttribute]
     public Animator _anim;
+    public GameObject SmokeEffect;
 
     void Start()
     {
+        Transform smokeSpawn = transform;
+        GameObject decoy = Instantiate(SmokeEffect, smokeSpawn);
         _controller = GetComponent<CharacterController>();
+        SmokeEffect.GetComponent<ParticleSystem>().Play();
         //start a coroutine where after x amount of seconds the object will hide or kill itself
         StartCoroutine(Kill(_aliveTime));
     }

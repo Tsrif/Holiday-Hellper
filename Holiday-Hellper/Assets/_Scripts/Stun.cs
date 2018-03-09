@@ -17,8 +17,9 @@ public class Stun : Ability
 
         if (Input.GetButtonDown("Stun") && !start)
         {
+            CheckOkay(this.GetType().ToString(), manaCost);
             //check to see if it's okay to use the ability
-            if (CheckOkay(this.GetType().ToString(), manaCost))
+            if (okayToUse)
             {
                 //if okay then stun 
                 if (stun != null)
