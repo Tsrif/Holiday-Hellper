@@ -99,13 +99,13 @@ public class GameController : MonoBehaviour
     public void switchToPlaying()
     {
         gameState = GameState.PLAYING;
-        gameStateDisplay.text = "Playing";
+        //gameStateDisplay.text = "Playing";
     }
 
     public void switchToPaused()
     {
         gameState = GameState.PAUSED;
-        gameStateDisplay.text = "Paused";
+       // gameStateDisplay.text = "Paused";
     }
 
     public void caught()

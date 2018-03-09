@@ -99,13 +99,11 @@ public class PlayerController : MonoBehaviour
         switch (_playerState)
         {
             case PlayerState.IDLE:
-                Movement(0);
+                defaultVals();
                 if (sneakInput> 0) {_playerState = PlayerState.WALKING_TO_SNEAK;}
                 if (runInput > 0) { _playerState = PlayerState.RUNNING; }
                 if (verticalInput != 0|| horizontalInput != 0) { _playerState = PlayerState.WALKING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
-                anim.SetBool("Walk", true);
-                soundRadius.radius = idleRad;
                 break;
 
             case PlayerState.WALKING:
@@ -149,6 +147,7 @@ public class PlayerController : MonoBehaviour
                 //Turn off walk
                 anim.SetBool("Walk", false);
                 //Transition
+                anim.ResetTrigger("Change To Walk");
                 anim.SetTrigger("Change To Sneak");
                 //turn on sneak
                 anim.SetBool("Sneak", true);
@@ -160,6 +159,7 @@ public class PlayerController : MonoBehaviour
                 //Turn on walk
                 anim.SetBool("Walk", true);
                 //Transition
+                anim.ResetTrigger("Change To Sneak");
                 anim.SetTrigger("Change To Walk");
                 //turn off sneak
                 anim.SetBool("Sneak", false);
@@ -169,7 +169,6 @@ public class PlayerController : MonoBehaviour
 
             case PlayerState.WALK_TO_IDLE:
                 anim.SetBool("Walk", false);
-                anim.SetTrigger("Stop Walk");
                 _playerState = PlayerState.IDLE;
                 break;
 
@@ -186,6 +185,7 @@ public class PlayerController : MonoBehaviour
         verticalInput = Input.GetAxis("Vertical");
         //sneak 
         sneakInput = Input.GetAxis("Sneak");
+        sneakInput = Mathf.Clamp(sneakInput, 0, 1);
         // run 
         runInput = Input.GetAxis("Run");
         // punch 
@@ -215,6 +215,15 @@ public class PlayerController : MonoBehaviour
             Quaternion newRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
             playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
         }
+    }
+
+    void defaultVals() {
+        Movement(0);
+        soundRadius.radius = idleRad;
+        anim.SetBool("Walk", true);
+        anim.SetBool("Sneak", false);
+        //anim.ResetTrigger("Change To Walk");
+       // anim.ResetTrigger("Change To Sneak");
     }
 
 }

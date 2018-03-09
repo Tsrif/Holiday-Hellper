@@ -20,9 +20,9 @@ public class Decoy : MonoBehaviour
     void Start()
     {
         Transform smokeSpawn = transform;
-        GameObject decoy = Instantiate(SmokeEffect, smokeSpawn);
+        //GameObject decoy = Instantiate(SmokeEffect, smokeSpawn);
         _controller = GetComponent<CharacterController>();
-        SmokeEffect.GetComponent<ParticleSystem>().Play();
+        //SmokeEffect.GetComponent<ParticleSystem>().Play();
         //start a coroutine where after x amount of seconds the object will hide or kill itself
         StartCoroutine(Kill(_aliveTime));
     }
