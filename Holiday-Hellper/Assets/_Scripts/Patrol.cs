@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using System;
 
 
 //Patrol - Walks between set points
@@ -74,6 +75,8 @@ public class Patrol : MonoBehaviour
     public Vector3 offsetVector;
     public float reactionTime;
 
+    public static event Action<bool> spottedPlayer;
+
 
     // Use this for initialization
     private void Start()
@@ -82,7 +85,7 @@ public class Patrol : MonoBehaviour
         _patrolState = PatrolState.PATROLLING;
         wanderIndex = 0;
         agent = GetComponent<NavMeshAgent>();
-        agent.avoidancePriority = Random.Range(1, 100);
+        agent.avoidancePriority = UnityEngine.Random.Range(1, 100);
         hearingRadius = GetComponent<SphereCollider>();
         alerted = false;
         StartCoroutine(ReactionDelay(reactionTime));
@@ -133,6 +136,11 @@ public class Patrol : MonoBehaviour
 
         //the local scale of the z will mess with the hearingRadius' radius, so multiple by z
         viewDistance = hearingRadius.radius * transform.localScale.z;
+
+        if (spottedPlayer != null)
+        {
+            spottedPlayer(canHear);
+        }
 
         //Swap between states
         changeState();
@@ -397,7 +405,10 @@ public class Patrol : MonoBehaviour
     bool CanHearPlayer(Vector3 dirToTarget)
     {
         //If the player isn't inside return false 
-        if (!inside) { return false; }
+        if (!inside)
+        {
+            return false;
+        }
         //check if something is blocking hearing of the patrol
         if (!Physics.Linecast(transform.position, target.transform.position, viewMask))
         {

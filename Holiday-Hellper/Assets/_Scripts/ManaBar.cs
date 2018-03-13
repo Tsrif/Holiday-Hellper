@@ -23,6 +23,7 @@ public class ManaBar : MonoBehaviour
     public float fillAmount;
     public bool refill;
     public String sendTo;
+    private HideState _hideState;
 
     // Use this for initialization
     void Start()
@@ -30,16 +31,19 @@ public class ManaBar : MonoBehaviour
         manaPool = max;
         bar.GetComponent<Image>().fillAmount = manaPool;
         fillAmount = bar.GetComponent<Image>().fillAmount;
+        _hideState = HideState.NOT_HIDDEN;
     }
 
     private void OnEnable()
     {
         Ability.ManaSend += ManaCheck;
+        Hide.hide += hideState;
     }
 
     private void OnDisable()
     {
         Ability.ManaSend -= ManaCheck;
+        Hide.hide -= hideState;
     }
 
     // Update is called once per frame
@@ -64,7 +68,7 @@ public class ManaBar : MonoBehaviour
     {
         refill = false;
         yield return new WaitForSeconds(time);
-        if (manaPool <= max) { refill = true; }
+        if (manaPool <= max && _hideState == HideState.NOT_HIDDEN) { refill = true; }
 
     }
 
@@ -79,5 +83,10 @@ public class ManaBar : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(RefillBar(time));
         }
+    }
+
+    void hideState(HideState state) {
+        _hideState = state;
+
     }
 }

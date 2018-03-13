@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING, WALKING_TO_SNEAK, SNEAK_TO_WALKING,WALK_TO_IDLE };
+public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING, WALKING_TO_SNEAK, SNEAK_TO_WALKING, WALK_TO_IDLE };
 public enum PlayerVisibility { NOTVISIBLE, VISIBLE };
 public class PlayerController : MonoBehaviour
 {
@@ -45,6 +45,9 @@ public class PlayerController : MonoBehaviour
     public float horizontalInput;
     public float sneakInput;
     public float runInput;
+    [SpaceAttribute]
+    public float percentVisible;
+    public string lightSource;
 
     public static event Action<PlayerState> CurrentState;
 
@@ -64,6 +67,7 @@ public class PlayerController : MonoBehaviour
         hide = HideState.NOT_HIDDEN;
         anim.SetBool("Walk", true);
         _playerState = PlayerState.IDLE;
+        LightDetect2.PercentVisible += lightDetection;
 
     }
 
@@ -71,11 +75,12 @@ public class PlayerController : MonoBehaviour
     {
         GameController.changeGameState -= updateGameState;
         Hide.hide -= playerHide;
+        LightDetect2.PercentVisible -= lightDetection;
     }
 
     void Update()
     {
-        if (gameState == GameState.PAUSED || gameState == GameState.WIN || gameState == GameState.LOSE )
+        if (gameState == GameState.PAUSED || gameState == GameState.WIN || gameState == GameState.LOSE)
         {
             return;
         }
@@ -100,9 +105,9 @@ public class PlayerController : MonoBehaviour
         {
             case PlayerState.IDLE:
                 defaultVals();
-                if (sneakInput> 0) {_playerState = PlayerState.WALKING_TO_SNEAK;}
+                if (sneakInput > 0) { _playerState = PlayerState.WALKING_TO_SNEAK; }
                 if (runInput > 0) { _playerState = PlayerState.RUNNING; }
-                if (verticalInput != 0|| horizontalInput != 0) { _playerState = PlayerState.WALKING; }
+                if (verticalInput != 0 || horizontalInput != 0) { _playerState = PlayerState.WALKING; }
                 if (interact.carrying) { _playerState = PlayerState.CARRYING; }
                 break;
 
@@ -175,10 +180,11 @@ public class PlayerController : MonoBehaviour
             default:
                 break;
         }
-        if (CurrentState != null) { CurrentState(_playerState);}
+        if (CurrentState != null) { CurrentState(_playerState); }
     }
 
-    void GetInput() {
+    void GetInput()
+    {
         //Horizontal
         horizontalInput = Input.GetAxis("Horizontal");
         // vertical
@@ -193,13 +199,15 @@ public class PlayerController : MonoBehaviour
 
     //Helper function to get the movement direction
     //Ignores Y
-    float getMoveDir() {
+    float getMoveDir()
+    {
         float temp1 = moveDirection.x;
         float temp2 = moveDirection.z;
         return temp1 + temp2;
     }
 
-    void Movement(float moveSpeed) {
+    void Movement(float moveSpeed)
+    {
         float y = moveDirection.y;
         moveDirection = (transform.forward * verticalInput) + (transform.right * horizontalInput);
         moveDirection = moveDirection.normalized * moveSpeed;
@@ -217,13 +225,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void defaultVals() {
+    void defaultVals()
+    {
         Movement(0);
         soundRadius.radius = idleRad;
         anim.SetBool("Walk", true);
         anim.SetBool("Sneak", false);
-        //anim.ResetTrigger("Change To Walk");
-       // anim.ResetTrigger("Change To Sneak");
     }
 
+    void lightDetection(float percent)
+    {
+        percentVisible = percent;
+    }
 }
