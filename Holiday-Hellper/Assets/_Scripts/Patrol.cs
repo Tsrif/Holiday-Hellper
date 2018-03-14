@@ -74,6 +74,8 @@ public class Patrol : MonoBehaviour
 
     public Vector3 offsetVector;
     public float reactionTime;
+    public float noticeThreshold;
+    public float currChance;
 
     public static event Action<bool> spottedPlayer;
 
@@ -134,16 +136,31 @@ public class Patrol : MonoBehaviour
             canSee = false;
         }
 
+        //This kind of a bad way to send this notification, but I wasn't sure where else to put it / how
+        if (canSee || canHear)
+        {
+            if (spottedPlayer != null)
+            {
+                spottedPlayer(true);
+            }
+        }
+        else {
+            if (spottedPlayer != null)
+            {
+                spottedPlayer(false);
+            }
+        }
+
         //the local scale of the z will mess with the hearingRadius' radius, so multiple by z
         viewDistance = hearingRadius.radius * transform.localScale.z;
 
-        if (spottedPlayer != null)
-        {
-            spottedPlayer(canHear);
-        }
-
         //Swap between states
         changeState();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        currChance = CalculateChance();
     }
 
     private void OnTriggerStay(Collider other)
@@ -161,6 +178,7 @@ public class Patrol : MonoBehaviour
     {
         inside = false;
         canHear = false;
+        currChance = 0;
         if (_patrolState == PatrolState.PURSUING)
         {
 
@@ -256,7 +274,6 @@ public class Patrol : MonoBehaviour
                     StopCoroutine(CountDown(vigilantTime, search));
                     StartCoroutine(CountDown(vigilantTime, search));
                 }
-
                 break;
 
             case PatrolState.PURSUING:
@@ -400,7 +417,6 @@ public class Patrol : MonoBehaviour
         }
     }
 
-
     //Used to make it so patrol can't hear player through walls
     bool CanHearPlayer(Vector3 dirToTarget)
     {
@@ -414,11 +430,12 @@ public class Patrol : MonoBehaviour
         {
             //draw a line between the patrol and the player
             //Debug.DrawRay(transform.position, directionTotarget, Color.yellow);
+            if (currChance != 0) { return true; }
+
             return true;
         }
         return false;
     }
-
 
     bool CanSeePlayer(Vector3 dirToTarget)
     {
@@ -438,12 +455,16 @@ public class Patrol : MonoBehaviour
                 {
                     //draw a line between the patrol and the player
                     //Debug.DrawRay(transform.position, dirToTarget, Color.red, 2f, false);
+
                     //can see player
-                    return true;
+                    if (currChance != 0 || distance <6) { return true; }
+                    //return true;
                 }
             }
         }
         //can't see player 
+        //if (currChance == 0 ) { currChance = CalculateChance(); }
+        currChance = CalculateChance();
         return false;
     }
 
@@ -471,6 +492,21 @@ public class Patrol : MonoBehaviour
     {
 
         target = decoy;
+    }
+
+    float CalculateChance() {
+        //random number between 0 and 1 * percentVisible, if greater than noticeThreshold
+        float chance = UnityEngine.Random.value * player.GetComponent<PlayerController>().percentVisible;
+        if (chance > noticeThreshold) {
+            print( chance + "GOTCHA BOI");
+            return chance;
+        }
+        else
+        {
+            print(chance + "Guess I didn't see nothin' lol");
+            return 0;
+        }
+       
     }
 
     /*

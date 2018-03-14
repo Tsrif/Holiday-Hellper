@@ -28,7 +28,7 @@ public class LightDetect2 : MonoBehaviour
             distance = Vector3.Distance(transform.position, player.transform.position);
             //Debug.DrawRay(transform.position, player.transform.position - transform.position, Color.yellow);
             percentVisible = ((1 / distance) * 10) * 2; //there's probably a better formula but this is what I came up with
-            percentVisible = Mathf.Clamp(percentVisible, 0, 1);
+            percentVisible = Mathf.Clamp(percentVisible, 0, 0.99f);
             sendNotif(percentVisible);
         }
 
