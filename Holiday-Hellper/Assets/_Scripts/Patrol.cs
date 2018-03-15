@@ -87,7 +87,8 @@ public class Patrol : MonoBehaviour
         _patrolState = PatrolState.PATROLLING;
         wanderIndex = 0;
         agent = GetComponent<NavMeshAgent>();
-        agent.avoidancePriority = UnityEngine.Random.Range(1, 100);
+        noticeThreshold = UnityEngine.Random.Range(0.5f,0.9f);
+        agent.avoidancePriority = UnityEngine.Random.Range(1, 100); //set random priority
         hearingRadius = GetComponent<SphereCollider>();
         alerted = false;
         StartCoroutine(ReactionDelay(reactionTime));
@@ -494,16 +495,17 @@ public class Patrol : MonoBehaviour
         target = decoy;
     }
 
+    //Calculate chance of seeing player based off player's visibility
     float CalculateChance() {
         //random number between 0 and 1 * percentVisible, if greater than noticeThreshold
         float chance = UnityEngine.Random.value * player.GetComponent<PlayerController>().percentVisible;
         if (chance > noticeThreshold) {
-            print( chance + "GOTCHA BOI");
+            //print( chance + "GOTCHA BOI");
             return chance;
         }
         else
         {
-            print(chance + "Guess I didn't see nothin' lol");
+            //print(chance + "Guess I didn't see nothin' lol");
             return 0;
         }
        

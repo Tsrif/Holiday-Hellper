@@ -47,7 +47,6 @@ public class PlayerController : MonoBehaviour
     public float runInput;
     [SpaceAttribute]
     public float percentVisible;
-    public string lightSource;
 
     public static event Action<PlayerState> CurrentState;
 
