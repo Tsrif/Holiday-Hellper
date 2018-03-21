@@ -51,9 +51,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1643ed28471d25b4b99567fcbc1f1bba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseUI: {fileID: 0}
-  winUI: {fileID: 0}
-  defaultPause: {fileID: 0}
-  defaultWin: {fileID: 0}
-  ES: {fileID: 0}
+  _gameState: 0
+  PauseHolder: {fileID: 0}
+  Winholder: {fileID: 0}
+  loseHolder: {fileID: 0}
   gameStateDisplay: {fileID: 0}
+  defaultWinButton: {fileID: 0}
+  defaultPauseButton: {fileID: 0}
+  defaultLoseButton: {fileID: 0}

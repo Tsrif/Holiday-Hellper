@@ -853,7 +853,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292279560143512}
-  m_LocalRotation: {x: 0.61173385, y: -0.37456438, z: 0.59215903, w: 0.36719328}
+  m_LocalRotation: {x: 0.6117339, y: -0.3745644, z: 0.5921591, w: 0.3671933}
   m_LocalPosition: {x: -0.008604211, y: 0.018568106, z: 0.000048802875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1480,9 +1480,12 @@ MonoBehaviour:
   viewMask:
     serializedVersion: 2
     m_Bits: 512
+  player: {fileID: 0}
   _patrolState: 0
   offsetVector: {x: 0, y: 2.5, z: 0}
   reactionTime: 0.5
+  noticeThreshold: 0
+  currChance: 0
 --- !u!114 &114811164926591148
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1501,6 +1504,7 @@ MonoBehaviour:
   increment: 1
   inside: 0
   patrol: {fileID: 114702507969412188}
+  gameState: 0
 --- !u!114 &114889889448096866
 MonoBehaviour:
   m_ObjectHideFlags: 1
