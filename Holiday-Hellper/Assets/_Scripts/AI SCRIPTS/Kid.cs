@@ -74,6 +74,8 @@ public class Kid : MonoBehaviour
 
     public static event Action<bool> spottedPlayer;
 
+    public KidState type;
+
 
     // Use this for initialization
     private void Start()
@@ -235,22 +237,22 @@ public class Kid : MonoBehaviour
                 agent.speed = 0;
                 // change to the sleeping animation
                 anim.SetInteger("State", (int)_kidState);
-                //if (canHear) { anim.SetTrigger("StandUp"); _kidState = KidState.FLEEING;}
+                if (canHear) { anim.SetTrigger("StandUp"); _kidState = type; }
                 break;
 
             // Runs away from player 
             case KidState.FLEEING:
                 if (anim.GetCurrentAnimatorStateInfo(0).shortNameHash == sleepId)
                 {
-                    print("He sleep");
-                    anim.SetTrigger("StandUp");
-                    //Do something if this particular state is palying
+                    //anim.SetTrigger("StandUp");
+                    anim.Play("StandUp"); //When it's a trigger it calls multiple times
+                                          //But when it's a play it works perfeclty 
                 }
                 agent.speed = runSpeed;
                 // change to the sleeping animation
                 anim.SetInteger("State", (int)_kidState);
                 //move the kid 
-                if (agent.remainingDistance <= 1 || agent.destination == null || agent.velocity.magnitude == 0)
+                if (agent.remainingDistance <= 2 || agent.destination == null || agent.velocity.magnitude == 0)
                 {
                     Vector3 newPos = RandomNavSphere(transform.position, wanderDistance, 9);
                     agent.SetDestination(newPos);
@@ -260,12 +262,24 @@ public class Kid : MonoBehaviour
             // Cowers in fear
             case KidState.TERRIFIED:
                 agent.speed = 0;
+                if (anim.GetCurrentAnimatorStateInfo(0).shortNameHash == sleepId)
+                {
+                    //anim.SetTrigger("StandUp");
+                    anim.Play("StandUp"); //When it's a trigger it calls multiple times
+                                          //But when it's a play it works perfeclty 
+                }
                 // change to the sleeping animation
                 anim.SetInteger("State", (int)_kidState);
                 break;
 
             // Walks Between Points 
             case KidState.WALKING:
+                if (anim.GetCurrentAnimatorStateInfo(0).shortNameHash == sleepId)
+                {
+                    //anim.SetTrigger("StandUp");
+                    anim.Play("StandUp"); //When it's a trigger it calls multiple times
+                                          //But when it's a play it works perfeclty 
+                }
                 agent.speed = walkSpeed;
                 // change the animation
                 anim.SetInteger("State", (int)_kidState);
@@ -285,8 +299,8 @@ public class Kid : MonoBehaviour
                 agent.speed = 0;
                 // change to the stunned animation
                 anim.SetInteger("State", (int)_kidState);
+                if (!stunned) { _kidState = type; }
                 break;
-
         }
 
     }
