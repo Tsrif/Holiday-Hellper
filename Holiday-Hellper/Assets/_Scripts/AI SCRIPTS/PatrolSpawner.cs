@@ -26,7 +26,7 @@ public class PatrolSpawner : MonoBehaviour {
             Transform spawnPos = patrolPoints[Random.Range(0, patrolPoints.Count)];
             //print(spawnPos);
             Quaternion rotation = transform.rotation;
-            //instantiate decoy prefab
+            //instantiate patrol prefab
             GameObject patrol = Instantiate(patrolPrefab, spawnPos.position, rotation);
             patrol.GetComponent<Patrol>().patrolPoints[0] = patrolPoints[Random.Range(0, patrolPoints.Count)];
             patrol.GetComponent<Patrol>().patrolPoints[1] = patrolPoints[Random.Range(0, patrolPoints.Count)];
