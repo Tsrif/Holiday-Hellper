@@ -79,11 +79,14 @@ public class Patrol : MonoBehaviour
 
     public static event Action<bool> spottedPlayer;
 
+    private void Awake()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
 
     // Use this for initialization
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
         _patrolState = PatrolState.PATROLLING;
         wanderIndex = 0;
         agent = GetComponent<NavMeshAgent>();
@@ -336,6 +339,10 @@ public class Patrol : MonoBehaviour
                 {
                     Vector3 newPos = RandomNavSphere(transform.position, wanderDistance, 9);
                     agent.SetDestination(newPos);
+                }
+                if (canSee || canHear)
+                {
+                    _patrolState = PatrolState.PURSUING;
                 }
                 //Swap to vigilant
                 if (alerted)

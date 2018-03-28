@@ -12,7 +12,7 @@ public class PatrolSpawner : MonoBehaviour {
     public int patrolAmount;
     public int parentAmount;
     public int dogAmount;
-    public float distanceAmount;
+    //public float distanceAmount;
 
     void Start () {
         createPatrol();
