@@ -140,20 +140,21 @@ public class Patrol : MonoBehaviour
             canSee = false;
         }
 
-        //This kind of a bad way to send this notification, but I wasn't sure where else to put it / how
-        if (canSee || canHear)
-        {
-            if (spottedPlayer != null)
-            {
-                spottedPlayer(true);
-            }
-        }
-        else {
-            if (spottedPlayer != null)
-            {
-                spottedPlayer(false);
-            }
-        }
+        ////This kind of a bad way to send this notification, but I wasn't sure where else to put it / how
+        //if (canSee || canHear)
+        //{
+        //    if (spottedPlayer != null)
+        //    {
+        //        print("we spot");
+        //        spottedPlayer(true);
+        //    }
+        //}
+        //else {
+        //    if (spottedPlayer != null)
+        //    {
+        //        spottedPlayer(false);
+        //    }
+        //}
 
         //the local scale of the z will mess with the hearingRadius' radius, so multiple by z
         viewDistance = hearingRadius.radius * transform.localScale.z;
@@ -265,6 +266,7 @@ public class Patrol : MonoBehaviour
                 //swap to vigilant
                 if (alerted)
                 {
+                    sendSpot(false);
                     //change state to vigilant then start coroutine
                     _patrolState = PatrolState.VIGILANT;
                     StopCoroutine(CountDown(vigilantTime, alerted));
@@ -273,6 +275,7 @@ public class Patrol : MonoBehaviour
                 //swap to search
                 if (search)
                 {
+                    sendSpot(false);
                     //change state to search then start coroutine
                     _patrolState = PatrolState.SEARCH;
                     StopCoroutine(CountDown(vigilantTime, search));
@@ -281,6 +284,7 @@ public class Patrol : MonoBehaviour
                 break;
 
             case PatrolState.PURSUING:
+                sendSpot(true);
                 //Change the speed
                 agent.speed = runSpeed;
                 // chases after the target
@@ -291,9 +295,11 @@ public class Patrol : MonoBehaviour
                 //If they hide while we are pursuing them
                 if (!canSee && !canHear)
                 {
+                    sendSpot(false);
                     if (playersState == PlayerState.HIDE)
                     {  //change state to search then start coroutine
                         search = true;
+                        sendSpot(false);
                         _patrolState = PatrolState.SEARCH;
                         StartCoroutine(CountDown(vigilantTime, alerted));
                     }
@@ -492,6 +498,7 @@ public class Patrol : MonoBehaviour
         if (distance <= 4)
         {
             StartCoroutine(Stunned(stunTime));
+            sendSpot(false);
             _patrolState = PatrolState.STUNNED;
         }
     }
@@ -516,6 +523,13 @@ public class Patrol : MonoBehaviour
             return 0;
         }
        
+    }
+
+    void sendSpot(bool seen) {
+        if (spottedPlayer != null)
+        {
+            spottedPlayer(seen);
+        }
     }
 
     /*

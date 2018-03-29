@@ -27,7 +27,7 @@ public class PatrolSpawner : MonoBehaviour {
             //print(spawnPos);
             Quaternion rotation = transform.rotation;
             //instantiate patrol prefab
-            GameObject patrol = Instantiate(patrolPrefab, spawnPos.position, rotation);
+            GameObject patrol = Instantiate(patrolPrefab, spawnPos.position, rotation,transform);
             patrol.GetComponent<Patrol>().patrolPoints[0] = patrolPoints[Random.Range(0, patrolPoints.Count)];
             patrol.GetComponent<Patrol>().patrolPoints[1] = patrolPoints[Random.Range(0, patrolPoints.Count)];
         }
@@ -39,7 +39,7 @@ public class PatrolSpawner : MonoBehaviour {
             Transform spawnPos = patrolPoints[Random.Range(0, patrolPoints.Count)];
             Quaternion rotation = transform.rotation;
             //instantiate decoy prefab
-            GameObject parent = Instantiate(parentPrefab, spawnPos.position, rotation);
+            GameObject parent = Instantiate(parentPrefab, spawnPos.position, rotation,transform);
             parent.GetComponent<Patrol>().patrolPoints[0] = patrolPoints[Random.Range(0, patrolPoints.Count)];
             parent.GetComponent<Patrol>().patrolPoints[1] = patrolPoints[Random.Range(0, patrolPoints.Count)];
         }
@@ -51,7 +51,7 @@ public class PatrolSpawner : MonoBehaviour {
             Transform spawnPos = patrolPoints[Random.Range(0, patrolPoints.Count)];
             Quaternion rotation = transform.rotation;
             //instantiate decoy prefab
-            GameObject dog = Instantiate(dogPrefab, spawnPos.position, rotation);
+            GameObject dog = Instantiate(dogPrefab, spawnPos.position, rotation,transform);
             dog.GetComponent<Patrol>().patrolPoints[0] = patrolPoints[Random.Range(0, patrolPoints.Count)];
             dog.GetComponent<Patrol>().patrolPoints[1] = patrolPoints[Random.Range(0, patrolPoints.Count)];
         }

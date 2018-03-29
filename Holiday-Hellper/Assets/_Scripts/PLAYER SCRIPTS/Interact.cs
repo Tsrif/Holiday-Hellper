@@ -102,6 +102,7 @@ public class Interact : MonoBehaviour {
         nearChild = false;
         //turn off kid script
         kid.GetComponent<Kid>().enabled = false;
+        kid.GetComponent<NavMeshAgent>().enabled = false;
         //turn off visual part 
         foreach (Transform child in kid.transform)
         {
@@ -116,8 +117,9 @@ public class Interact : MonoBehaviour {
     void BringBackChild() {
         //Unparent to player 
         kid.transform.SetParent(null);
-        //turn off kid script
+        //turn on kid script
         kid.GetComponent<Kid>().enabled = true;
+        kid.GetComponent<NavMeshAgent>().enabled = true;
         //turn on visual part 
         foreach (Transform child in kid.transform)
         {

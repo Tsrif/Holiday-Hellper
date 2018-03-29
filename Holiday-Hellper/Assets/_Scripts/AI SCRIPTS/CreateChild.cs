@@ -21,7 +21,7 @@ public class CreateChild : MonoBehaviour
         Transform spawnPos = spawnSpots[UnityEngine.Random.Range(0, spawnSpots.Count)];
         Quaternion rotation = transform.rotation;
         //instantiate child prefab
-        GameObject child = Instantiate(childPrefab, spawnPos.position, rotation);
+        GameObject child = Instantiate(childPrefab, spawnPos.position, rotation,transform);
         //Set type of child
         kidType = (KidState)UnityEngine.Random.Range(0, 5);
         child.GetComponent<Kid>().type = kidType;
