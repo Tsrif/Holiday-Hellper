@@ -53,11 +53,13 @@ public class GameController : MonoBehaviour
     private void OnEnable()
     {
         HoleController.winCondition += win;
+        HouseCompletionCounter.win += win;
         EnemyCapture.caught += Lose;
     }
     private void OnDisable()
     {
         HoleController.winCondition -= win;
+        HouseCompletionCounter.win -= win;
         EnemyCapture.caught -= Lose;
     }
     // Update is called once per frame
