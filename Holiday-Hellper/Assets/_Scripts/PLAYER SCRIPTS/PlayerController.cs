@@ -58,9 +58,7 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         interact = GetComponent<Interact>();
         _playerState = PlayerState.IDLE;
-        ghostModel.SetActive(false);
     }
-
 
     void OnEnable()
     {

@@ -19,7 +19,7 @@ public class Ghost : Ability {
                 //if okay then ghost 
                 if (ghost != null)
                 {
-                    StartCoroutine(GhostTimer(5f));
+                    StartCoroutine(GhostTimer(ghostTime));
                     ghost(true);
                 }
             }
