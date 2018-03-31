@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING, WALKING_TO_SNEAK, SNEAK_TO_WALKING, WALK_TO_IDLE, CAPTURING };
+public enum PlayerState { IDLE, WALKING, SNEAK, RUNNING, HIDE, CARRYING, WALKING_TO_SNEAK, SNEAK_TO_WALKING, WALK_TO_IDLE, CAPTURING, GHOST };
 public enum PlayerVisibility { NOTVISIBLE, VISIBLE };
 public class PlayerController : MonoBehaviour
 {
@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     public Transform pivot;
     public float rotateSpeed;
     public GameObject playerModel;
+    public GameObject ghostModel;
     [SpaceAttribute]
 
     //All the input 
@@ -47,6 +48,7 @@ public class PlayerController : MonoBehaviour
     public float runInput;
     [SpaceAttribute]
     public float percentVisible;
+    public bool beGhost;
 
     public static event Action<PlayerState> CurrentState;
 
@@ -56,6 +58,7 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         interact = GetComponent<Interact>();
         _playerState = PlayerState.IDLE;
+        ghostModel.SetActive(false);
     }
 
 
@@ -68,7 +71,7 @@ public class PlayerController : MonoBehaviour
         Hide.hide += playerHide;
         LightDetect2.PercentVisible += lightDetection;
         ButtonMash.captureStart += changeCaptureState;
-
+        Ghost.ghost += ghostStuff;
     }
 
     void OnDisable()
@@ -77,6 +80,7 @@ public class PlayerController : MonoBehaviour
         Hide.hide -= playerHide;
         LightDetect2.PercentVisible -= lightDetection;
         ButtonMash.captureStart -= changeCaptureState;
+        Ghost.ghost -= ghostStuff;
     }
 
     void Update()
@@ -180,11 +184,29 @@ public class PlayerController : MonoBehaviour
 
             case PlayerState.CAPTURING:
                 //Change the speed so player doesn't move 
-                //Change the animation 
-                
-
+                //Change the animation
                 break;
 
+            case PlayerState.GHOST:
+                //Change to ghost layer to ignore collision
+                gameObject.layer = 11;
+                //Hide normal player model
+                playerModel.SetActive(false);
+                //Show ghost model 
+                ghostModel.SetActive(true);
+                //turn off collision
+                Movement(walkSpeed);
+                if (!beGhost)
+                {
+                    //Change back to normal lyaer
+                    gameObject.layer = 0;
+                    //Show normal player model
+                    playerModel.SetActive(true);
+                    //Hide ghost model 
+                    ghostModel.SetActive(false);
+                    _playerState = PlayerState.IDLE;
+                }
+                break;
 
             default:
                 break;
@@ -223,7 +245,8 @@ public class PlayerController : MonoBehaviour
         moveDirection.y = y;
         anim.SetFloat("BlendX", controller.velocity.x);
         anim.SetFloat("BlendY", controller.velocity.z);
-        moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale * Time.deltaTime);
+        //moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale * Time.deltaTime);
+        moveDirection.y -= gravityScale * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
         //move player in different directions based on camera direction
         if (horizontalInput != 0 || verticalInput != 0)
@@ -250,5 +273,11 @@ public class PlayerController : MonoBehaviour
     void changeCaptureState(bool state) {
         if (state) { _playerState = PlayerState.CAPTURING; }
         else if (!state) { _playerState = PlayerState.IDLE; }
+    }
+
+    void ghostStuff(bool state) {
+        beGhost = state;
+        _playerState = PlayerState.GHOST;
+
     }
 }

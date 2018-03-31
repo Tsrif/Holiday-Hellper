@@ -6,17 +6,20 @@ using UnityEngine.AI;
 public class PatrolSpawner : MonoBehaviour {
     public List<Transform> patrolPoints = new List<Transform>();
     public GameObject patrolPrefab;
-    public GameObject parentPrefab;
+    public GameObject dadPrefab;
+    public GameObject momPrefab;
     public GameObject dogPrefab;
     [SpaceAttribute]
     public int patrolAmount;
-    public int parentAmount;
+    public int dadAmount;
+    public int momAmount;
     public int dogAmount;
     //public float distanceAmount;
 
     void Start () {
         createPatrol();
-        createParent();
+        createDad();
+        createMom();
         createDog();
 	}
 	
@@ -33,13 +36,26 @@ public class PatrolSpawner : MonoBehaviour {
         }
     }
 
-    void createParent() {
-        for (int i = 0; i < parentAmount; i++)
+    void createDad() {
+        for (int i = 0; i < dadAmount; i++)
         {
             Transform spawnPos = patrolPoints[Random.Range(0, patrolPoints.Count)];
             Quaternion rotation = transform.rotation;
             //instantiate decoy prefab
-            GameObject parent = Instantiate(parentPrefab, spawnPos.position, rotation,transform);
+            GameObject parent = Instantiate(dadPrefab, spawnPos.position, rotation,transform);
+            parent.GetComponent<Patrol>().patrolPoints[0] = patrolPoints[Random.Range(0, patrolPoints.Count)];
+            parent.GetComponent<Patrol>().patrolPoints[1] = patrolPoints[Random.Range(0, patrolPoints.Count)];
+        }
+    }
+
+    void createMom()
+    {
+        for (int i = 0; i < momAmount; i++)
+        {
+            Transform spawnPos = patrolPoints[Random.Range(0, patrolPoints.Count)];
+            Quaternion rotation = transform.rotation;
+            //instantiate decoy prefab
+            GameObject parent = Instantiate(momPrefab, spawnPos.position, rotation, transform);
             parent.GetComponent<Patrol>().patrolPoints[0] = patrolPoints[Random.Range(0, patrolPoints.Count)];
             parent.GetComponent<Patrol>().patrolPoints[1] = patrolPoints[Random.Range(0, patrolPoints.Count)];
         }

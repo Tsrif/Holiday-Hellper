@@ -5,9 +5,6 @@ using UnityEngine.AI;
 using System;
 
 
-//Patrol - Walks between set points
-//Pursuing - Chases player
-//Similar to Patrol, but now radius to notice player is much larger 
 public enum PatrolState { PATROLLING, PURSUING, VIGILANT, WANDER, SEARCH, STUNNED };
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -133,8 +130,8 @@ public class Patrol : MonoBehaviour
         //Calculate the distance between the patrol and the player 
         distance = Vector3.Distance(transform.position, target.transform.position);
 
-        //If the player is hiding then patrol can't see or hear them 
-        if (playersState == PlayerState.HIDE)
+        //If the player is hiding or ghost then patrol can't see or hear them 
+        if (playersState == PlayerState.HIDE || playersState == PlayerState.GHOST)
         {
             canHear = false;
             canSee = false;
@@ -384,9 +381,15 @@ public class Patrol : MonoBehaviour
                 //change the radius
                 hearingRadius.radius = 0;
                 //Changes the animation depending on the speed the agent is moving
-                anim.SetFloat("BlendX", agent.velocity.x);
-                anim.SetFloat("BlendY", agent.velocity.z);
-                if (!stunned) { _patrolState = PatrolState.PATROLLING; }
+                //anim.SetFloat("BlendX", agent.velocity.x);
+                //anim.SetFloat("BlendY", agent.velocity.z);
+                anim.SetTrigger("Stun");
+                if (!stunned)
+                {
+                    anim.ResetTrigger("Stun");
+                    anim.SetTrigger("Back To Walk");
+                    _patrolState = PatrolState.PATROLLING;
+                }
                 break;
 
             default:
