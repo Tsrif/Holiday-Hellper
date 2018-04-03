@@ -30,7 +30,7 @@ public class Hide : Ability
     void Update()
     {
         if (!CheckExceptions()) { return; }
-        if (Input.GetButtonDown("Hide"))
+        if (Input.GetButtonDown("UseAbility"))
         {
             if (_hideState == HideState.NOT_HIDDEN)
             {

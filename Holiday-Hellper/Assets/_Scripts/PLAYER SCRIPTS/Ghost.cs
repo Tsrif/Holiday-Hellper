@@ -10,7 +10,7 @@ public class Ghost : Ability {
 	void Update () {
         if (!CheckExceptions()) { return; }
 
-        if (Input.GetKey(KeyCode.G))
+        if (Input.GetButtonDown("UseAbility"))
         {
             CheckOkay(this.GetType().ToString(), manaCost);
             //check to see if it's okay to use the ability

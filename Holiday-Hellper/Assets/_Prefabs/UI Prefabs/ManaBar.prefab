@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 223054904213115934}
   - component: {fileID: 114850614417346820}
   - component: {fileID: 114000740624319440}
+  - component: {fileID: 114487569151362990}
   m_Layer: 5
   m_Name: ManaBar_Canvas
   m_TagString: Untagged
@@ -197,6 +198,19 @@ MonoBehaviour:
   fillAmount: 0
   refill: 0
   sendTo: 
+--- !u!114 &114487569151362990
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1919441000660120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6bd0348a523d114a986fe0b5ddfd445, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuPrefab: {fileID: 114044234482735576, guid: c20c12545355e2f4486a45a6e750dd7d,
+    type: 2}
 --- !u!114 &114850614417346820
 MonoBehaviour:
   m_ObjectHideFlags: 1

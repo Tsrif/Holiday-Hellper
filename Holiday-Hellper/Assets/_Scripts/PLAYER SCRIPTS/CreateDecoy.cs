@@ -20,7 +20,7 @@ public class CreateDecoy : Ability
     void Update()
     {
         if (!CheckExceptions()) { return; }
-        if (Input.GetButtonDown("Decoy"))
+        if (Input.GetButtonDown("UseAbility"))
         {
             //check to see if it's okay to use the ability
             CheckOkay(this.GetType().ToString(), manaCost);
