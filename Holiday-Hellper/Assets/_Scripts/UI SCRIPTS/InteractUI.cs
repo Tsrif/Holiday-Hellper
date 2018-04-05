@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InteractUI : MonoBehaviour
 {
+    public RadialMenu menu;
 
     [System.Serializable]
     public class Action
@@ -20,23 +21,34 @@ public class InteractUI : MonoBehaviour
     void Start()
     {
         RadialMenuSpawner.instance.SpawnMenu(this);
+        RadialMenuSpawner.instance.gameObject.SetActive(true);
+
+
         //RadialMenuSpawner.instance.menuRef.SetActive(true);
     }
-    void Update()
-    {
-        if (Input.GetButton("SkillSelect"))
-        {
-            RadialMenuSpawner.instance.gameObject.SetActive(true);
 
-        }
-        else
-        {
-            //if (RadialMenuSpawner.instance.gameObject.GetComponent<RadialMenu>().selected)
-            //{
-            //    Debug.Log(RadialMenuSpawner.instance.gameObject.GetComponent<RadialMenu>().selected.title + "was selected");
-            //}
-            RadialMenuSpawner.instance.gameObject.SetActive(false);
-        }
+    // void Update()
+    //{
+
+
+
+    /*
+
+    if (Input.GetButton("SkillSelect"))
+    {
+        RadialMenuSpawner.instance.gameObject.SetActive(true);
 
     }
+    else
+    {
+        //if (RadialMenuSpawner.instance.gameObject.GetComponent<RadialMenu>().selected)
+        //{
+        //    Debug.Log(RadialMenuSpawner.instance.gameObject.GetComponent<RadialMenu>().selected.title + "was selected");
+        //}
+        RadialMenuSpawner.instance.gameObject.SetActive(false);
+    }
+
+*/
+
 }
+

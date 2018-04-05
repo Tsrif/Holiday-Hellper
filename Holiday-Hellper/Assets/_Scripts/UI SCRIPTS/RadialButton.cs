@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 
 
-public class RadialButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class RadialButton : MonoBehaviour
 {
 
     public Image circle;
@@ -14,8 +14,66 @@ public class RadialButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public RadialMenu myMenu;
     public int pos;
 
-    Color defaultColor;
-    public void OnPointerEnter(PointerEventData eventData)
+    private void Start()
+    {
+        myMenu.selected = myMenu.Hide;
+        myMenu.Hide.circle.color = Color.white;
+    }
+    void Update()
+    {
+        if (Input.GetButtonDown("Ghost"))
+        {
+            Debug.Log("Ghost");
+
+            resetColor();
+            myMenu.selected = myMenu.Ghost;
+            myMenu.Ghost.circle.color = Color.white;
+
+
+        }
+        else if (Input.GetButtonDown("Hide"))
+        {
+            Debug.Log("Hide");
+
+            resetColor();
+            myMenu.selected = myMenu.Hide;
+            myMenu.Hide.circle.color = Color.white;
+
+
+        }
+        else if (Input.GetButtonDown("Decoy"))
+        {
+            Debug.Log("Decoy");
+
+            resetColor();
+            myMenu.selected = myMenu.Decoy;
+            myMenu.Decoy.circle.color = Color.white;
+
+
+        }
+        else if (Input.GetButtonDown("Stun"))
+        {
+            Debug.Log("Stun");
+
+            resetColor();
+            myMenu.selected = myMenu.Stun;
+            myMenu.Stun.circle.color = Color.white;
+
+
+        }
+    }
+
+    public void resetColor()
+    {
+        myMenu.Ghost.circle.color = Color.red;
+        myMenu.Hide.circle.color = Color.red;
+        myMenu.Decoy.circle.color = Color.red;
+        myMenu.Stun.circle.color = Color.red;
+
+    }
+    /*
+
+public void OnPointerEnter(PointerEventData eventData)
     {
         myMenu.selected = this;
         defaultColor = circle.color;
@@ -27,5 +85,5 @@ public class RadialButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         //myMenu.selected = null;
         circle.color = defaultColor;
     }
+    */
 }
-
