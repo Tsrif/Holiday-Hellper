@@ -21,7 +21,11 @@ public class RadialButton : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetButtonDown("Ghost"))
+        //xAxisD == 1 : Right
+        //xAxisD == -1 : Left
+        //yAxisD == 1 : Up
+        //yAxisD == -1 : down
+        if (Input.GetButtonDown("Ghost") || Input.GetAxis("yAxisD") == 1)
         {
             Debug.Log("Ghost");
 
@@ -31,7 +35,7 @@ public class RadialButton : MonoBehaviour
 
 
         }
-        else if (Input.GetButtonDown("Hide"))
+        else if (Input.GetButtonDown("Hide") || Input.GetAxis("xAxisD") == 1)
         {
             Debug.Log("Hide");
 
@@ -41,7 +45,7 @@ public class RadialButton : MonoBehaviour
 
 
         }
-        else if (Input.GetButtonDown("Decoy"))
+        else if (Input.GetButtonDown("Decoy") || Input.GetAxis("yAxisD") == -1)
         {
             Debug.Log("Decoy");
 
@@ -51,7 +55,7 @@ public class RadialButton : MonoBehaviour
 
 
         }
-        else if (Input.GetButtonDown("Stun"))
+        else if (Input.GetButtonDown("Stun") || Input.GetAxis("xAxisD") == -1)
         {
             Debug.Log("Stun");
 
