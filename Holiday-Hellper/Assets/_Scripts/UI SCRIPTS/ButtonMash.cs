@@ -63,7 +63,7 @@ public class ButtonMash : MonoBehaviour {
 
     void ButtonMasher()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetButtonDown("Mash"))
         {
             meter += mashIncrement;
         }

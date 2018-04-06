@@ -12,7 +12,7 @@ public class HeadLight : MonoBehaviour {
         on = true;
     }
     void Update () {
-        if (Input.GetKeyDown(KeyCode.Mouse1)) {
+        if (Input.GetButtonDown("Headlight")) {
             on = !on;
             change(on);
         }
