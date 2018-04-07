@@ -914,6 +914,7 @@ GameObject:
   - component: {fileID: 114726567044253504}
   - component: {fileID: 114486497246093016}
   - component: {fileID: 114512742430524282}
+  - component: {fileID: 114905673747810054}
   m_Layer: 0
   m_Name: Player Abilities
   m_TagString: Untagged
@@ -3489,6 +3490,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ccc64853d02f241a93b38f90d58030, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menu: {fileID: 0}
   options:
   - color: {r: 0.9044118, g: 0.07980106, b: 0.07980106, a: 1}
     sprite: {fileID: 21300000, guid: de638c228513e2c41bfe271d088e6db7, type: 3}
@@ -3579,7 +3581,7 @@ MonoBehaviour:
   playerState: 0
   manaCost: 3
   okayToUse: 0
-  stunTime: 5
+  stunTime: 8
   coolDown: 2
   start: 0
 --- !u!114 &114662435597480380
@@ -3637,7 +3639,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1776866621508172}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1beeb8806506e60449ecbd51fadd055e, type: 3}
   m_Name: 
@@ -3670,9 +3672,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nearChild: 0
   carrying: 0
+  kid: {fileID: 0}
   holder: {fileID: 4986241142579512}
   currentInteractable: {fileID: 0}
-  interactWith: []
+--- !u!114 &114905673747810054
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1776866621508172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a95d1424ac23e545b3f23748c27ca3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hide: {fileID: 114721170444894436}
+  decoy: {fileID: 114486497246093016}
+  stun: {fileID: 114603148473601234}
+  ghost: {fileID: 114512742430524282}
+  currentAbility: 1
 --- !u!114 &114932409122686432
 MonoBehaviour:
   m_ObjectHideFlags: 1

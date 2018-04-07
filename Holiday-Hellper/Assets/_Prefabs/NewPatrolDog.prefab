@@ -2590,11 +2590,13 @@ MonoBehaviour:
   inside: 0
   viewMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 4608
   player: {fileID: 0}
   _patrolState: 0
   offsetVector: {x: 0, y: 0, z: 0}
   reactionTime: 0
+  noticeThreshold: 0
+  currChance: 0
 --- !u!114 &114194921623070508
 MonoBehaviour:
   m_ObjectHideFlags: 1

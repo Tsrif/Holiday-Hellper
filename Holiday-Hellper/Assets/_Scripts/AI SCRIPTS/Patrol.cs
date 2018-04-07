@@ -92,7 +92,6 @@ public class Patrol : MonoBehaviour
         hearingRadius = GetComponent<SphereCollider>();
         alerted = false;
         StartCoroutine(ReactionDelay(reactionTime));
-
     }
 
     void OnEnable()
@@ -101,6 +100,14 @@ public class Patrol : MonoBehaviour
         PlayerController.CurrentState += playerState;
         Stun.stun += stunPatrol;
         CreateDecoy.decoySend += chaseDecoy;
+        _patrolState = PatrolState.PATROLLING;
+        wanderIndex = 0;
+        agent = GetComponent<NavMeshAgent>();
+        noticeThreshold = UnityEngine.Random.Range(0.5f, 0.9f);
+        agent.avoidancePriority = UnityEngine.Random.Range(1, 100); //set random priority
+        hearingRadius = GetComponent<SphereCollider>();
+        alerted = false;
+        StartCoroutine(ReactionDelay(reactionTime));
     }
 
     void OnDisable()

@@ -14,6 +14,8 @@ using System;
 public class HouseWin : MonoBehaviour {
     public GameObject kid;
     public static event Action houseCompleted;
+    public static event Action<int> turnNextHouseOn;
+    public int id;
    
     private void OnTriggerEnter(Collider other)
     {
@@ -27,6 +29,7 @@ public class HouseWin : MonoBehaviour {
             this.gameObject.GetComponent<BoxCollider>().enabled = false;
             //send notification
             if (houseCompleted != null) { houseCompleted(); }
+            if (turnNextHouseOn != null) { turnNextHouseOn(id); }
         }
     }
 

@@ -14,6 +14,7 @@ public class PatrolSpawner : MonoBehaviour {
     public int dadAmount;
     public int momAmount;
     public int dogAmount;
+    public bool wanderAll;
     //public float distanceAmount;
 
     void Start () {
@@ -23,7 +24,6 @@ public class PatrolSpawner : MonoBehaviour {
         createDog();
 	}
 	
-
     void createPatrol() {
         for (int i = 0; i < patrolAmount; i++) {
             Transform spawnPos = patrolPoints[Random.Range(0, patrolPoints.Count)];
@@ -33,6 +33,7 @@ public class PatrolSpawner : MonoBehaviour {
             GameObject patrol = Instantiate(patrolPrefab, spawnPos.position, rotation,transform);
             patrol.GetComponent<Patrol>().patrolPoints[0] = patrolPoints[Random.Range(0, patrolPoints.Count)];
             patrol.GetComponent<Patrol>().patrolPoints[1] = patrolPoints[Random.Range(0, patrolPoints.Count)];
+            if (wanderAll) { patrol.GetComponent<Patrol>().wander = true; }
         }
     }
 
@@ -45,6 +46,7 @@ public class PatrolSpawner : MonoBehaviour {
             GameObject parent = Instantiate(dadPrefab, spawnPos.position, rotation,transform);
             parent.GetComponent<Patrol>().patrolPoints[0] = patrolPoints[Random.Range(0, patrolPoints.Count)];
             parent.GetComponent<Patrol>().patrolPoints[1] = patrolPoints[Random.Range(0, patrolPoints.Count)];
+            if (wanderAll) { parent.GetComponent<Patrol>().wander = true; }
         }
     }
 
@@ -58,6 +60,7 @@ public class PatrolSpawner : MonoBehaviour {
             GameObject parent = Instantiate(momPrefab, spawnPos.position, rotation, transform);
             parent.GetComponent<Patrol>().patrolPoints[0] = patrolPoints[Random.Range(0, patrolPoints.Count)];
             parent.GetComponent<Patrol>().patrolPoints[1] = patrolPoints[Random.Range(0, patrolPoints.Count)];
+            if (wanderAll) { parent.GetComponent<Patrol>().wander = true; }
         }
     }
 
