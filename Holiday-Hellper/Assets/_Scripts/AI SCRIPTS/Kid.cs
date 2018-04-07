@@ -14,7 +14,7 @@ public enum KidState { SLEEPING, FLEEING, TERRIFIED, WALKING, SCREAMING, FIGHTIN
  * the transistions between the states will be handled in those respective classes
  */
 
-public class Kid : MonoBehaviour
+public class Kid : Interactable
 {
     [SpaceAttribute]
 

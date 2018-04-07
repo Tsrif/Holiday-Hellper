@@ -8,7 +8,7 @@ public class Interact : MonoBehaviour {
 
     public bool nearChild;
     public bool carrying;
-    private GameObject kid;
+   // public GameObject kid;
     public Transform holder;
     private Rigidbody rb;
     public Interactable currentInteractable;
@@ -37,7 +37,7 @@ public class Interact : MonoBehaviour {
     {
         if (Input.GetButtonDown("Interact")) {
 
-            if (nearChild == true && kid.GetComponent<Kid>()._kidState == KidState.STUNNED)
+            if (nearChild == true )
             {
                 //kid.GetComponent<NavMeshAgent>().isStopped = true;
                 //kid.transform.SetParent(holder.transform);
@@ -64,21 +64,25 @@ public class Interact : MonoBehaviour {
     //If you activate the mini game then run away when you capture the child you won't be able to put it down
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag == "Kid")
-        {
-            //Debug.Log("near kid");
-            nearChild = true;
-            //Debug.Log("Nearchild  " + nearChild);
-            kid = collision.gameObject;
-        }
+        if (carrying == false) {
 
-        if(collision.gameObject.GetComponent<Interactable>() != null)
-        {
-            //Debug.Log("Added");
-            Interactable addInteractable = collision.gameObject.GetComponent<Interactable>();
-            currentInteractable = addInteractable;
-            //interactWith.Add(addInteractable);
+            if (collision.gameObject.tag == "Kid")
+            {
+                //Debug.Log("near kid");
+                nearChild = true;
+                //Debug.Log("Nearchild  " + nearChild);
+                /* PLEASE FOR THE LOVE OF GOD FIX THIS THIS IS NOT A GOOD WAY TO DO THIS LMAOOOOOOOOOOOO*/
+                // kid = collision.gameObject.transform.parent.gameObject.transform.parent.gameObject;
+            }
 
+            if (collision.gameObject.GetComponent<Interactable>() != null)
+            {
+                //Debug.Log("Added");
+                Interactable addInteractable = collision.gameObject.GetComponent<Interactable>();
+                currentInteractable = addInteractable;
+                //interactWith.Add(addInteractable);
+
+            }
         }
     }
 
@@ -94,34 +98,33 @@ public class Interact : MonoBehaviour {
         {
             currentInteractable = null;
         }
-
     }
 
     void HideCHild() {
         carrying = true;
         nearChild = false;
         //turn off kid script
-        kid.GetComponent<Kid>().enabled = false;
-        kid.GetComponent<NavMeshAgent>().enabled = false;
+        currentInteractable.GetComponent<Kid>().enabled = false;
+        currentInteractable.GetComponent<NavMeshAgent>().enabled = false;
         //turn off visual part 
-        foreach (Transform child in kid.transform)
+        foreach (Transform child in currentInteractable.transform)
         {
             child.gameObject.SetActive(false);
         }
         //parent to player 
-        kid.transform.SetParent(holder.transform);
+        currentInteractable.transform.SetParent(holder.transform);
         //set posistion 
-        kid.transform.position = holder.transform.position;
+        currentInteractable.transform.position = holder.transform.position;
     }
 
     void BringBackChild() {
         //Unparent to player 
-        kid.transform.SetParent(null);
+        currentInteractable.transform.SetParent(null);
         //turn on kid script
-        kid.GetComponent<Kid>().enabled = true;
-        kid.GetComponent<NavMeshAgent>().enabled = true;
+        currentInteractable.GetComponent<Kid>().enabled = true;
+        currentInteractable.GetComponent<NavMeshAgent>().enabled = true;
         //turn on visual part 
-        foreach (Transform child in kid.transform)
+        foreach (Transform child in currentInteractable.transform)
         {
             child.gameObject.SetActive(true);
         }
