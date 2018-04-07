@@ -9,6 +9,7 @@ public class LightSwitch : Interactable
 
     public void Start()
     {
+        _type = INTERACTABLETYPE.LIGHTSWITCH;
         //on = true;
         doThis = switchLightState;
         switchLightState();

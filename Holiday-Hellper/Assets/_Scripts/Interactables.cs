@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum INTERACTABLETYPE { KID, DOOR, LIGHTSWITCH };
 public class Interactable : MonoBehaviour
 {
-
+    public INTERACTABLETYPE _type;
     public string name;
     public delegate void myDelegate();
     public myDelegate doThis;

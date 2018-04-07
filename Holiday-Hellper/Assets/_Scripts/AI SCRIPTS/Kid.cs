@@ -80,6 +80,7 @@ public class Kid : Interactable
     // Use this for initialization
     private void Start()
     {
+        _type = INTERACTABLETYPE.KID;
         player = GameObject.FindGameObjectWithTag("Player");
         _kidState = KidState.SLEEPING;
         wanderIndex = 0;
