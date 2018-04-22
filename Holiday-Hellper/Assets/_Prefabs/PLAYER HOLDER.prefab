@@ -3565,6 +3565,7 @@ MonoBehaviour:
   playerState: 0
   manaCost: 10
   okayToUse: 0
+  player: {fileID: 1376562584028174}
   ghostTime: 5
 --- !u!114 &114603148473601234
 MonoBehaviour:

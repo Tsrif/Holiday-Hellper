@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 
 public class Ghost : Ability {
+    public GameObject player;
     public static event Action<bool> ghost; //send notification to turn into a ghost 
     public float ghostTime;
 	// Update is called once per frame
@@ -19,6 +20,7 @@ public class Ghost : Ability {
                 //if okay then ghost 
                 if (ghost != null)
                 {
+                    player.GetComponent<Interact>().enabled = false;
                     StartCoroutine(GhostTimer(ghostTime));
                     ghost(true);
                 }
@@ -32,6 +34,7 @@ public class Ghost : Ability {
         //if okay then ghost 
         if (ghost != null)
         {
+            player.GetComponent<Interact>().enabled = true;
             ghost(false);
         }
     }
