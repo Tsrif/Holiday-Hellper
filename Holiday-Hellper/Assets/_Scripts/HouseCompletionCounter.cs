@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System;
 
 public class HouseCompletionCounter : MonoBehaviour {
-    private int completed;
+    private static int completed = 0;
     public int max;
     public static event Action win;
     private void OnEnable()
@@ -24,6 +24,11 @@ public class HouseCompletionCounter : MonoBehaviour {
         if (completed == max) {
             if (win!=null) { win(); }
         }
+    }
+
+    public static int completionNum()
+    {
+        return completed;
     }
 }
 
