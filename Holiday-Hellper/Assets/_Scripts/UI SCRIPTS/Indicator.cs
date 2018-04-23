@@ -20,7 +20,7 @@ public class Indicator : MonoBehaviour {
 	void Update () {
 
         count = HouseCompletionCounter.completionNum();
-        Debug.Log("count is: " + count);
+        //Debug.Log("count is: " + count);
 
         if (targets != null)
         {
